@@ -1,6 +1,5 @@
 /***************************************************************************
  *   copyright       : (C) 2003-2008 by Pascal Brachet                     *
- *   addons by Luis Silvestre                                              *
  *   http://www.xm1math.net/texmaker/                                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -65,6 +64,7 @@
 #include "letterdialog.h"
 #include "quickdocumentdialog.h"
 #include "usermenudialog.h"
+#include "userkeyreplacementsdialog.h"
 #include "usertooldialog.h"
 #include "refdialog.h"
 #include "configdialog.h"
@@ -157,7 +157,7 @@ OutputView->setAllowedAreas(Qt::AllDockWidgetAreas);
 OutputView->setFeatures(QDockWidget::DockWidgetClosable);
 OutputView->setWindowTitle(tr("Messages / Log File"));
 addDockWidget(Qt::BottomDockWidgetArea,OutputView);
-
+connect(OutputView,SIGNAL(visibilityChanged ( bool )),this,SLOT(OutputViewVisibilityChanged(bool)));
 
 
 QFrame *Outputframe=new QFrame(OutputView);
@@ -227,7 +227,7 @@ errorIndex=-1;
 EditorView=new QTabWidget(this);
 EditorView->setFocusPolicy(Qt::ClickFocus);
 EditorView->setFocus();
-connect(EditorView, SIGNAL( currentChanged( int ) ), this, SLOT(UpdateCaption()) );
+connect(EditorView, SIGNAL( currentChanged( QWidget * ) ), this, SLOT(UpdateCaption()) );
 setCentralWidget(EditorView);
 setupMenus();
 setupToolBars();
@@ -266,7 +266,7 @@ connect(Act, SIGNAL(triggered()), this, SLOT(fileOpen()));
 fileMenu->addAction(Act);
 
 recentMenu=fileMenu->addMenu(tr("Open Recent"));
-for (int i = 0; i < 5; ++i) 
+for (int i = 0; i < 5; ++i)
 	{
 	recentFileActs[i] = new QAction(this);
 	recentFileActs[i]->setVisible(false);
@@ -381,10 +381,20 @@ Act = new QAction(QIcon(":/images/goto.png"), tr("Goto Line"), this);
 Act->setShortcut(Qt::CTRL+Qt::Key_G);
 connect(Act, SIGNAL(triggered()), this, SLOT(editGotoLine()));
 editMenu->addAction(Act);
+
+Act = new QAction(tr("Jump to last change"), this);
+Act->setShortcut(Qt::CTRL+Qt::Key_H);
+connect(Act, SIGNAL(triggered()), this, SLOT(editJumpToLastChange()));
+editMenu->addAction(Act);
+
+Act = new QAction(tr("Jump forward"), this);
+Act->setShortcut(Qt::CTRL+Qt::SHIFT+Qt::Key_H);
+connect(Act, SIGNAL(triggered()), this, SLOT(editJumpToLastChangeForward()));
+editMenu->addAction(Act);
+
 editMenu->addSeparator();
 
 Act = new QAction(tr("Check Spelling"), this);
-Act->setShortcut(Qt::CTRL+Qt::SHIFT+Qt::Key_F7);
 connect(Act, SIGNAL(triggered()), this, SLOT(editSpell()));
 editMenu->addAction(Act);
 editMenu->addSeparator();
@@ -455,6 +465,11 @@ toolMenu->addAction(Act);
 toolMenu->addSeparator();
 Act = new QAction(tr("Convert to Html"), this);
 connect(Act, SIGNAL(triggered()), this, SLOT(WebPublish()));
+toolMenu->addAction(Act);
+
+toolMenu->addSeparator();
+Act = new QAction(tr("Text Analysis"), this);
+connect(Act, SIGNAL(triggered()), this, SLOT(AnalyseText()));
 toolMenu->addAction(Act);
 
 
@@ -1165,6 +1180,10 @@ user12Menu->addSeparator();
 Act = new QAction(tr("Edit User &Commands"), this);
 connect(Act, SIGNAL(triggered()), this, SLOT(EditUserTool()));
 user12Menu->addAction(Act);
+Act = new QAction(tr("Edit User &Key Replacements..."), this);
+connect(Act, SIGNAL(triggered()), this, SLOT(EditUserKeyReplacements()));
+user1Menu->addAction(Act);
+
 
 viewMenu = menuBar()->addMenu(tr("&View"));
 Act = new QAction(tr("Next Document"), this);
@@ -1226,7 +1245,7 @@ if (shortcuts.isEmpty())
 	while ( iterator.hasNext() )
 		{
 		QAction *action = iterator.next();
-		if (action && (!action->menu()) && (!action->data().toString().isEmpty())) 
+		if (action && (!action->menu()) && (!action->data().toString().isEmpty()))
 			{
 			if (action->shortcut().isEmpty()) shortcuts.insert(action->data().toString(),"none");
 			else shortcuts.insert(action->data().toString(),action->shortcut());
@@ -1496,6 +1515,9 @@ pb3=new QPushButton(QIcon(":/images/bookmark3.png"),"",status);
 pb1->setToolTip(tr("Click to jump to the bookmark"));
 pb2->setToolTip(tr("Click to jump to the bookmark"));
 pb3->setToolTip(tr("Click to jump to the bookmark"));
+pb1->setShortcut(tr("Ctrl+1"));
+pb2->setShortcut(tr("Ctrl+2"));
+pb3->setShortcut(tr("Ctrl+3"));
 connect (pb1,SIGNAL(clicked()),this,SLOT(gotoBookmark1()));
 connect (pb2,SIGNAL(clicked()),this,SLOT(gotoBookmark2()));
 connect (pb3,SIGNAL(clicked()),this,SLOT(gotoBookmark3()));
@@ -1567,15 +1589,9 @@ bool Texmaker::FileAlreadyOpen(QString f)
 {
 bool rep=false;
 FilesMap::Iterator it;
-QString fw32,funix,forig;
 for( it = filenames.begin(); it != filenames.end(); ++it )
 	{
-	forig=filenames[it.key()];
-	fw32=filenames[it.key()];
-	funix=filenames[it.key()];
-	fw32.replace(QString("\\"),QString("/"));
-	funix.replace(QString("/"),QString("\\"));
-	if ( (forig==f) || (fw32==f) || (funix==f)) 
+	if (filenames[it.key()]==f)
 		{
 		EditorView->setCurrentIndex(EditorView->indexOf(it.key()));
 		rep=true;
@@ -1595,6 +1611,9 @@ edit->editor->setReadOnly(false);
 edit->editor->setEncoding(input_encoding);
 if (completion) edit->editor->setCompleter(completer);
 else edit->editor->setCompleter(0);
+edit->editor->UserKeyReplace = &UserKeyReplace;
+edit->editor->UserKeyReplaceAfterWord = &UserKeyReplaceAfterWord;
+edit->editor->UserKeyReplaceBeforeWord = &UserKeyReplaceBeforeWord;
 QFile file( f );
 if ( !file.open( QIODevice::ReadOnly ) )
 	{
@@ -1602,7 +1621,6 @@ if ( !file.open( QIODevice::ReadOnly ) )
 	return;
 	}
 QTextStream ts( &file );
-//qDebug() << ts.codec()->name();
 QTextCodec* codec = QTextCodec::codecForName(input_encoding.toLatin1());
 if(!codec) codec = QTextCodec::codecForLocale();
 //ts.setEncoding(QTextStream::Locale);
@@ -1659,6 +1677,9 @@ EditorView->addTab( edit, "untitled" );
 EditorView->setCurrentIndex(EditorView->indexOf(edit));
 if (wordwrap) {edit->editor->setWordWrapMode(QTextOption::WordWrap);}
 else {edit->editor->setWordWrapMode(QTextOption::NoWrap);}
+edit->editor->UserKeyReplace = &UserKeyReplace;
+edit->editor->UserKeyReplaceAfterWord = &UserKeyReplaceAfterWord;
+edit->editor->UserKeyReplaceBeforeWord = &UserKeyReplaceBeforeWord;
 //filenames.replace( edit, "untitled" );
 filenames.remove( edit);
 filenames.insert( edit, "untitled" );
@@ -1845,7 +1866,7 @@ while (currentEditorView() && accept)
 				accept=false;
 				break;
 			}
-		
+
 		}
 	else
 		{
@@ -1881,7 +1902,7 @@ while (currentEditorView() && accept)
 				delete currentEditorView();
 				break;
 			case 2:
-			default: 
+			default:
 				accept=false;
 				break;
 			}
@@ -2017,6 +2038,15 @@ gotoLineDialog->ui.spinLine->setMaximum( currentEditorView()->editor->numoflines
 gotoLineDialog->ui.spinLine->selectAll();
 }
 
+void Texmaker::editJumpToLastChange(){
+    if ( !currentEditorView() )	return;
+    currentEditorView()->editor->jumpChangePositionBackward();
+}
+void Texmaker::editJumpToLastChangeForward(){
+    if ( !currentEditorView() )	return;
+    currentEditorView()->editor->jumpChangePositionForward();
+}
+
 void Texmaker::editComment()
 {
 if ( !currentEditorView() )	return;
@@ -2043,7 +2073,6 @@ currentEditorView()->editor->unindentSelection();
 
 void Texmaker::editSpell()
 {
-if ( !currentEditorView() )	return;
 SpellerDialog *spellDlg=new SpellerDialog(this,currentEditorView()->editor,spell_dic,spell_ignored_words);
 if (spellDlg->exec())
 	{
@@ -2054,10 +2083,10 @@ if (spellDlg->exec())
 /////////////// CONFIG ////////////////////
 void Texmaker::ReadSettings()
 {
-QSettings *config=new QSettings(QSettings::IniFormat,QSettings::UserScope,"xm1","texmaker");
+//QSettings *config=new QSettings(QSettings::IniFormat,QSettings::UserScope,"xm1","texmaker");
 //for USB-stick version :
-//QSettings *config=new QSettings(QCoreApplication::applicationDirPath()+"/texmaker.ini",QSettings::IniFormat);
-if (!config->contains("IniMode")) 
+QSettings *config=new QSettings(QCoreApplication::applicationDirPath()+"/texmaker.ini",QSettings::IniFormat);
+if (!config->contains("IniMode"))
 	{
 	delete config;
 	config=new QSettings("xm1","texmaker");
@@ -2068,6 +2097,22 @@ singlemode=true;
 QFontDatabase fdb;
 QStringList xf = fdb.families();
 QString deft;
+// #ifdef Q_WS_X11
+// x11style=config->value( "X11/Style","plastique").toString();
+// if (xf.contains("DejaVu Sans",Qt::CaseInsensitive)) deft="DejaVu Sans";
+// else if (xf.contains("Bitstream Vera Sans",Qt::CaseInsensitive)) deft="Bitstream Vera Sans";
+// else if (xf.contains("Luxi Sans",Qt::CaseInsensitive)) deft="Luxi Sans";
+// else deft=qApp->font().family();
+// x11fontfamily=config->value("X11/Font Family",deft).toString();
+// x11fontsize=config->value( "X11/Font Size","10").toInt();
+//
+// QStringList styles = QStyleFactory::keys();
+// if (styles.contains("oxygen")) QApplication::setStyle(QStyleFactory::create("oxygen"));
+// else QApplication::setStyle(QStyleFactory::create(x11style));
+// // QApplication::setPalette(QApplication::style()->standardPalette());
+// QFont x11Font (x11fontfamily,x11fontsize);
+// QApplication::setFont(x11Font);
+// #endif
 
 QRect screen = QApplication::desktop()->screenGeometry();
 int w= config->value( "Geometries/MainwindowWidth",screen.width()-100).toInt();
@@ -2113,7 +2158,7 @@ showoutputview=config->value("Show/OutputView",true).toBool();
 showstructview=config->value( "Show/Structureview",true).toBool();
 
 quickmode=config->value( "Tools/Quick Mode",1).toInt();
-#ifdef Q_WS_MACX 
+#ifdef Q_WS_MACX
 // /usr/local/teTeX/bin/i386-apple-darwin-current
 // /usr/local/teTeX/bin/powerpc-apple-darwin-current
 // /usr/texbin MACTEX/TEXLIVE2007
@@ -2144,16 +2189,18 @@ viewdvi_command=config->value("Tools/Dvi","\"C:/Program Files/MiKTeX 2.7/miktex/
 //C:/texmf/miktex/bin/yap.exe
 //\"C:/Program Files/MiKTeX 2.5/miktex/bin/yap.exe\" -1 -s @%.tex %.dvi
 viewps_command=config->value("Tools/Ps","\"C:/Program Files/Ghostgum/gsview/gsview32.exe\" %.ps").toString();
-viewpdf_command=config->value("Tools/Pdf","\"C:/Program Files/Adobe/Reader 9.0/Reader/AcroRd32.exe\" %.pdf").toString();
-ghostscript_command=config->value("Tools/Ghostscript","\"C:/Program Files/gs/gs8.63/bin/gswin32c.exe\"").toString();
+viewpdf_command=config->value("Tools/Pdf","\"C:/Program Files/Adobe/Reader 8.0/Reader/AcroRd32.exe\" %.pdf").toString();
+ghostscript_command=config->value("Tools/Ghostscript","\"C:/Program Files/gs/gs8.61/bin/gswin32c.exe\"").toString();
 #endif
 #ifdef Q_WS_X11
-int desktop_env=1; // 1 : no kde ; 2: kde ; 3 : kde4 ; 
+int desktop_env=1; // 1 : no kde ; 2: kde ; 3 : kde4 ;
 QStringList styles = QStyleFactory::keys();
 QString kdesession= ::getenv("KDE_FULL_SESSION");
-QString kdeversion= ::getenv("KDE_SESSION_VERSION");
-if (!kdesession.isEmpty()) desktop_env=2;
-if (!kdeversion.isEmpty()) desktop_env=3;
+if (!kdesession.isEmpty())
+	{
+	if (styles.contains("Oxygen")) desktop_env=3;
+	else desktop_env=2;
+	}
 
 latex_command=config->value("Tools/Latex","latex -interaction=nonstopmode %.tex").toString();
 dvips_command=config->value("Tools/Dvips","dvips -o %.ps %.dvi").toString();
@@ -2200,67 +2247,10 @@ else deft=qApp->font().family();
 x11fontfamily=config->value("X11/Font Family",deft).toString();
 x11fontsize=config->value( "X11/Font Size","10").toInt();
 
-if ((desktop_env !=3) || (!styles.contains("Oxygen"))) QApplication::setStyle(QStyleFactory::create(x11style)); //plastique style if not kde4
+if (desktop_env !=3) QApplication::setStyle(QStyleFactory::create(x11style));
 // QApplication::setPalette(QApplication::style()->standardPalette());
 QFont x11Font (x11fontfamily,x11fontsize);
 QApplication::setFont(x11Font);
-
-QPalette pal = QApplication::palette();
-pal.setColor( QPalette::Active, QPalette::Highlight, QColor("#4490d8") );
-pal.setColor( QPalette::Inactive, QPalette::Highlight, QColor("#4490d8") );
-pal.setColor( QPalette::Disabled, QPalette::Highlight, QColor("#4490d8") );
-
-//pal.setColor( QPalette::Active, QPalette::Highlight, QColor("#5689be") );
-//pal.setColor( QPalette::Inactive, QPalette::Highlight, QColor("#5689be") );
-//pal.setColor( QPalette::Disabled, QPalette::Highlight, QColor("#5689be") );
-
-pal.setColor( QPalette::Active, QPalette::HighlightedText, QColor("#ffffff") );
-pal.setColor( QPalette::Inactive, QPalette::HighlightedText, QColor("#ffffff") );
-pal.setColor( QPalette::Disabled, QPalette::HighlightedText, QColor("#ffffff") );
-
-pal.setColor( QPalette::Active, QPalette::Base, QColor("#ffffff") );
-pal.setColor( QPalette::Inactive, QPalette::Base, QColor("#ffffff") );
-pal.setColor( QPalette::Disabled, QPalette::Base, QColor("#ffffff") );
-
-pal.setColor( QPalette::Active, QPalette::WindowText, QColor("#000000") );
-pal.setColor( QPalette::Inactive, QPalette::WindowText, QColor("#000000") );
-pal.setColor( QPalette::Disabled, QPalette::WindowText, QColor("#000000") );
-
-pal.setColor( QPalette::Active, QPalette::ButtonText, QColor("#000000") );
-pal.setColor( QPalette::Inactive, QPalette::ButtonText, QColor("#000000") );
-pal.setColor( QPalette::Disabled, QPalette::ButtonText, QColor("#000000") );
-
-if (desktop_env ==3)
-	{
-	pal.setColor( QPalette::Active, QPalette::Window, QColor("#eae9e9") );
-	pal.setColor( QPalette::Inactive, QPalette::Window, QColor("#eae9e9") );
-	pal.setColor( QPalette::Disabled, QPalette::Window, QColor("#eae9e9") );
-
-	pal.setColor( QPalette::Active, QPalette::Button, QColor("#eae9e9") );
-	pal.setColor( QPalette::Inactive, QPalette::Button, QColor("#eae9e9") );
-	pal.setColor( QPalette::Disabled, QPalette::Button, QColor("#eae9e9") );
-	}
-else
-	{
-/*
-	pal.setColor( QPalette::Active, QPalette::Window, QColor("#f1f1f1") );
-	pal.setColor( QPalette::Inactive, QPalette::Window, QColor("#f1f1f1") );
-	pal.setColor( QPalette::Disabled, QPalette::Window, QColor("#f1f1f1") );
-
-	pal.setColor( QPalette::Active, QPalette::Button, QColor("#f1f1f1") );
-	pal.setColor( QPalette::Inactive, QPalette::Button, QColor("#f1f1f1") );
-	pal.setColor( QPalette::Disabled, QPalette::Button, QColor("#f1f1f1") );
-*/
-	pal.setColor( QPalette::Active, QPalette::Window, QColor("#fbf8f1") );
-	pal.setColor( QPalette::Inactive, QPalette::Window, QColor("#fbf8f1") );
-	pal.setColor( QPalette::Disabled, QPalette::Window, QColor("#fbf8f1") );
-
-	pal.setColor( QPalette::Active, QPalette::Button, QColor("#fbf8f1") );
-	pal.setColor( QPalette::Inactive, QPalette::Button, QColor("#fbf8f1") );
-	pal.setColor( QPalette::Disabled, QPalette::Button, QColor("#fbf8f1") );
-	}
-
-QApplication::setPalette(pal);
 #endif
 userquick_command=config->value("Tools/Userquick","latex -interaction=nonstopmode %.tex|bibtex %.aux|latex -interaction=nonstopmode %.tex|latex -interaction=nonstopmode %.tex|xdvi %.dvi").toString();
 userClassList=config->value("Tools/User Class").toStringList();
@@ -2301,6 +2291,16 @@ UserToolName[3]=config->value("User/ToolName4","").toString();
 UserToolCommand[3]=config->value("User/Tool4","").toString();
 UserToolName[4]=config->value("User/ToolName5","").toString();
 UserToolCommand[4]=config->value("User/Tool5","").toString();
+
+int UserKeyReplaceCount = config->value("User/KeyReplaceCount",2).toInt();
+UserKeyReplace.clear();
+UserKeyReplaceAfterWord.clear();
+UserKeyReplaceBeforeWord.clear();
+for (int i=0;i<UserKeyReplaceCount;i++) {
+  UserKeyReplace.append(config->value("User/KeyReplace"+QVariant(i).toString(),i!=0?"'":"\"").toString());
+  UserKeyReplaceAfterWord.append(config->value("User/KeyReplaceAfterWord"+QVariant(i).toString(),i!=0?"''":"\"<").toString());
+  UserKeyReplaceBeforeWord.append(config->value("User/KeyReplaceBeforeWord"+QVariant(i).toString(),i!=0?"``":"\">").toString());
+}
 
 struct_level1=config->value("Structure/Structure Level 1","part").toString();
 struct_level2=config->value("Structure/Structure Level 2","chapter").toString();
@@ -2347,9 +2347,9 @@ config->endGroup();
 void Texmaker::SaveSettings()
 {
 //QSettings config("xm1","texmaker");
-QSettings config(QSettings::IniFormat,QSettings::UserScope,"xm1","texmaker");
+//QSettings config(QSettings::IniFormat,QSettings::UserScope,"xm1","texmaker");
 //for USB-stick version :
-//QSettings config(QCoreApplication::applicationDirPath()+"/texmaker.ini",QSettings::IniFormat);
+QSettings config(QCoreApplication::applicationDirPath()+"/texmaker.ini",QSettings::IniFormat);
 config.setValue( "IniMode",true);
 config.beginGroup( "texmaker" );
 QList<int> sizes;
@@ -2404,14 +2404,14 @@ config.setValue("Tools/Dvipdf",dvipdf_command);
 config.setValue("Tools/Metapost",metapost_command);
 config.setValue("Tools/Ghostscript",ghostscript_command);
 config.setValue("Tools/Userquick",userquick_command);
-if (userClassList.count()>0) config.setValue("Tools/User Class",userClassList); 
-if (userPaperList.count()>0) config.setValue("Tools/User Paper",userPaperList); 
-if (userEncodingList.count()>0) config.setValue("Tools/User Encoding",userEncodingList); 
-if (userOptionsList.count()>0) config.setValue("Tools/User Options",userOptionsList); 
+if (userClassList.count()>0) config.setValue("Tools/User Class",userClassList);
+if (userPaperList.count()>0) config.setValue("Tools/User Paper",userPaperList);
+if (userEncodingList.count()>0) config.setValue("Tools/User Encoding",userEncodingList);
+if (userOptionsList.count()>0) config.setValue("Tools/User Options",userOptionsList);
 
 
 config.setValue("Files/Last Document",lastDocument);
-if (recentFilesList.count()>0) config.setValue("Files/Recent Files",recentFilesList); 
+if (recentFilesList.count()>0) config.setValue("Files/Recent Files",recentFilesList);
 
 config.setValue("Files/Input Encoding", input_encoding);
 
@@ -2445,6 +2445,14 @@ config.setValue("User/ToolName4",UserToolName[3]);
 config.setValue("User/Tool4",UserToolCommand[3]);
 config.setValue("User/ToolName5",UserToolName[4]);
 config.setValue("User/Tool5",UserToolCommand[4]);
+
+int UserKeyReplaceCount = UserKeyReplace.count();
+config.setValue("User/KeyReplaceCount",UserKeyReplaceCount);
+for (int i=0;i<UserKeyReplaceCount;i++) {
+  config.setValue("User/KeyReplace"+QVariant(i).toString(),UserKeyReplace[i]);
+  config.setValue("User/KeyReplaceAfterWord"+QVariant(i).toString(),UserKeyReplaceAfterWord[i]);
+  config.setValue("User/KeyReplaceBeforeWord"+QVariant(i).toString(),UserKeyReplaceBeforeWord[i]);
+}
 
 config.setValue("Structure/Structure Level 1",struct_level1);
 config.setValue("Structure/Structure Level 2",struct_level2);
@@ -2533,7 +2541,7 @@ while (p.isValid())
 			Child->setText(0,s);
 			}
 		};
-	
+
 	//// include ////
 	tagStart=tagEnd=0;
 	s=p.text();
@@ -2600,6 +2608,8 @@ while (p.isValid())
 		parent_level[1] = new QTreeWidgetItem(parent_level[0]);
 		parent_level[1]->setText(0,s);
 		parent_level[1]->setIcon(0,QIcon(":/images/chapter.png"));
+		parent_level[1]->setText(1,"chapter"); //this is intern (at least from textanalyse) needed to recognize chapter items!
+		parent_level[1]->setText(3,QString::number(i+1)); //this is intern (at least from textanalyse) needed to recognize chapter items! (2 would be name)
 		parent_level[2]=parent_level[3]=parent_level[4]=parent_level[1];
 		};
 	//// section ////
@@ -2652,15 +2662,15 @@ while (p.isValid())
 	i++;
 	p = p.next();
 	}
-if (!current.isEmpty()) 
+if (!current.isEmpty())
 	{
 	QList<QTreeWidgetItem *> fItems=StructureTreeWidget->findItems (current,Qt::MatchRecursive,0);
-	if ((fItems.size()>0 ) && (fItems.at(0))) 
+	if ((fItems.size()>0 ) && (fItems.at(0)))
 		{
 		StructureTreeWidget->setCurrentItem(fItems.at(0));
 		theitem=fItems.at(0)->parent();
-		while ((theitem) && (theitem!=top)) 
-			{	
+		while ((theitem) && (theitem!=top))
+			{
 			StructureTreeWidget->setItemExpanded (theitem,true);
 			theitem=theitem->parent();
 			}
@@ -2712,7 +2722,7 @@ if ((item) && (!structlist.isEmpty()))
 		QFileInfo fi(fname);
 		if (fi.exists() && fi.isReadable()) load(fname);
 		}
-	else 
+	else
 		{
 		bool ok;
 		int l=s.toInt(&ok,10);
@@ -2994,10 +3004,10 @@ if ( quickDlg->exec() )
 	if (quickDlg->ui.checkBox->isChecked()) hs=QString("\\hline ");
 	for ( int j=0;j<x;j++) {tag +=al;}
 	tag +=QString("}\n");
-	for ( int i=0;i<y;i++) 
+	for ( int i=0;i<y;i++)
 		{
 		tag +=hs;
-		for ( int j=0;j<x-1;j++) 
+		for ( int j=0;j<x-1;j++)
 			{
 			item =quickDlg->ui.tableWidget->item(i,j);
 			if (item) tag +=item->text()+ QString(" & ");
@@ -3020,7 +3030,7 @@ if ( !currentEditorView() )	return;
 QString al;
 ArrayDialog *arrayDlg = new ArrayDialog(this,"Array");
 QTableWidgetItem *item=new QTableWidgetItem();
-if ( arrayDlg->exec() ) 
+if ( arrayDlg->exec() )
 	{
 	int y = arrayDlg->ui.spinBoxRows->value();
 	int x = arrayDlg->ui.spinBoxColumns->value();
@@ -3035,9 +3045,9 @@ if ( arrayDlg->exec() )
 		for ( int j=0;j<x;j++) {tag +=al;} tag+="}";
 		}
 	tag +=QString("\n");
-	for ( int i=0;i<y-1;i++) 
+	for ( int i=0;i<y-1;i++)
 		{
-		for ( int j=0;j<x-1;j++) 
+		for ( int j=0;j<x-1;j++)
 			{
 			item =arrayDlg->ui.tableWidget->item(i,j);
 			if (item) tag +=item->text()+ QString(" & ");
@@ -3047,7 +3057,7 @@ if ( arrayDlg->exec() )
 		if (item) tag +=item->text()+ QString(" \\\\ \n");
 		else tag +=QString(" \\\\ \n");
 		}
-	for ( int j=0;j<x-1;j++) 
+	for ( int j=0;j<x-1;j++)
 		{
 		item =arrayDlg->ui.tableWidget->item(y-1,j);
 		if (item) tag +=item->text()+ QString(" & ");
@@ -3143,7 +3153,7 @@ if ( startDlg->exec() )
 	tag+=startDlg->ui.comboBoxSize->currentText()+QString(",");
 	tag+=startDlg->ui.comboBoxPaper->currentText();
 	QList<QListWidgetItem *> selectedItems=startDlg->ui.listWidgetOptions->selectedItems();
-	for (int i = 0; i < selectedItems.size(); ++i) 
+	for (int i = 0; i < selectedItems.size(); ++i)
 		{
 		if ( selectedItems.at(i)) opt+=QString(",")+selectedItems.at(i)->text();
 		}
@@ -3696,32 +3706,32 @@ InsertStructFromString("\\"+text);
 void Texmaker::OtherCommand(const QString& text)
 {
 if ( !currentEditorView() ) return;
-if (text=="label") 
+if (text=="label")
 	{
 	InsertFromString("\\label{} /7/0");
 	return;
 	}
-if (text=="ref") 
+if (text=="ref")
 	{
 	InsertRef();
 	return;
 	}
-if (text=="pageref") 
+if (text=="pageref")
 	{
 	InsertPageRef();
 	return;
 	}
-if (text=="index") 
+if (text=="index")
 	{
 	InsertFromString("\\index{}/7/0");
 	return;
 	}
-if (text=="cite") 
+if (text=="cite")
 	{
 	InsertFromString("\\cite{}/6/0");
 	return;
 	}
-if (text=="footnote") 
+if (text=="footnote")
 	{
 	InsertFromString("\\footnote{}/10/0");
 	return;
@@ -3869,7 +3879,7 @@ OutputTextEdit->clear();
 OutputTableWidget->hide();
 //OutputTextEdit->insertLine(commandline+"\n");
 proc->start(commandline);
-if (!proc->waitForStarted(1000)) 
+if (!proc->waitForStarted(1000))
 	{
 	ERRPROCESS=true;
 	OutputTextEdit->insertLine("Error : could not start the command\n");
@@ -3879,7 +3889,7 @@ else OutputTextEdit->insertLine("Process started\n");
 FINPROCESS=false;
 if (waitendprocess)
 	{
-	while (!FINPROCESS) 
+	while (!FINPROCESS)
 		{
 		qApp->instance()->processEvents(QEventLoop::ExcludeUserInputEvents);
 		}
@@ -3919,13 +3929,13 @@ switch (quickmode)
     {
     stat2->setText(QString(" %1 ").arg("Latex"));
     RunCommand(latex_command,true);
-    if (ERRPROCESS && !LogExists()) 
+    if (ERRPROCESS && !LogExists())
         {
 	QMessageBox::warning( this,tr("Error"),tr("Could not start the command."));
 	return;
 	}
     ViewLog();
-    if (NoLatexErrors()) 
+    if (NoLatexErrors())
     	{
 	stat2->setText(QString(" %1 ").arg("Dvips"));
     	if (!ERRPROCESS) RunCommand(dvips_command,true);
@@ -3939,13 +3949,13 @@ switch (quickmode)
     {
     stat2->setText(QString(" %1 ").arg("Latex"));
     RunCommand(latex_command,true);
-    if (ERRPROCESS && !LogExists()) 
+    if (ERRPROCESS && !LogExists())
         {
 	QMessageBox::warning( this,tr("Error"),tr("Could not start the command."));
 	return;
 	}
     ViewLog();
-    if (NoLatexErrors()) 
+    if (NoLatexErrors())
     	{
 	if (!ERRPROCESS) ViewDvi();
         else return;
@@ -3956,13 +3966,13 @@ switch (quickmode)
     {
     stat2->setText(QString(" %1 ").arg("Pdf Latex"));
     RunCommand(pdflatex_command,true);
-    if (ERRPROCESS && !LogExists()) 
+    if (ERRPROCESS && !LogExists())
         {
 	QMessageBox::warning( this,tr("Error"),tr("Could not start the command."));
 	return;
 	}
     ViewLog();
-    if (NoLatexErrors()) 
+    if (NoLatexErrors())
     	{
 	if (!ERRPROCESS) ViewPDF();
         else return;
@@ -3973,13 +3983,13 @@ switch (quickmode)
     {
     stat2->setText(QString(" %1 ").arg("Latex"));
     RunCommand(latex_command,true);
-    if (ERRPROCESS && !LogExists()) 
+    if (ERRPROCESS && !LogExists())
         {
 	QMessageBox::warning( this,tr("Error"),tr("Could not start the command."));
 	return;
 	}
     ViewLog();
-    if (NoLatexErrors()) 
+    if (NoLatexErrors())
     	{
 	stat2->setText(QString(" %1 ").arg("Dvi to Pdf"));
 	if (!ERRPROCESS) RunCommand(dvipdf_command,true);
@@ -3993,13 +4003,13 @@ switch (quickmode)
     {
     stat2->setText(QString(" %1 ").arg("Latex"));
     RunCommand(latex_command,true);
-    if (ERRPROCESS && !LogExists()) 
+    if (ERRPROCESS && !LogExists())
         {
 	QMessageBox::warning( this,tr("Error"),tr("Could not start the command."));
 	return;
 	}
     ViewLog();
-    if (NoLatexErrors()) 
+    if (NoLatexErrors())
     	{
 	stat2->setText(QString(" %1 ").arg("Dvips"));
 	if (!ERRPROCESS) RunCommand(dvips_command,true);
@@ -4014,7 +4024,7 @@ switch (quickmode)
  case 6:
     {
     QStringList commandList=userquick_command.split("|");
-    for (int i = 0; i < commandList.size(); ++i) 
+    for (int i = 0; i < commandList.size(); ++i)
 	{
 	if ((!ERRPROCESS)&&(!commandList.at(i).isEmpty())) RunCommand(commandList.at(i),true);
         else return;
@@ -4114,7 +4124,7 @@ int query =QMessageBox::warning(this, "Texmaker", tr("Delete the output files ge
 if (query==0)
 	{
 	stat2->setText(QString(" %1 ").arg(tr("Clean")));
-	for ( QStringList::Iterator it = extension.begin(); it != extension.end(); ++it ) 
+	for ( QStringList::Iterator it = extension.begin(); it != extension.end(); ++it )
 		{
 		f=basename+*it;
 		if (QFile::exists(f))
@@ -4124,7 +4134,7 @@ if (query==0)
 			file.remove();
 			}
 		}
-	
+
 	}
 }
 
@@ -4132,7 +4142,7 @@ void Texmaker::UserTool1()
 {
 QStringList commandList=UserToolCommand[0].split("|");
 ERRPROCESS=false;
-for (int i = 0; i < commandList.size(); ++i) 
+for (int i = 0; i < commandList.size(); ++i)
 	{
 	if ((!ERRPROCESS)&&(!commandList.at(i).isEmpty())) RunCommand(commandList.at(i),true);
         else return;
@@ -4143,7 +4153,7 @@ void Texmaker::UserTool2()
 {
 QStringList commandList=UserToolCommand[1].split("|");
 ERRPROCESS=false;
-for (int i = 0; i < commandList.size(); ++i) 
+for (int i = 0; i < commandList.size(); ++i)
 	{
 	if ((!ERRPROCESS)&&(!commandList.at(i).isEmpty())) RunCommand(commandList.at(i),true);
         else return;
@@ -4154,7 +4164,7 @@ void Texmaker::UserTool3()
 {
 QStringList commandList=UserToolCommand[2].split("|");
 ERRPROCESS=false;
-for (int i = 0; i < commandList.size(); ++i) 
+for (int i = 0; i < commandList.size(); ++i)
 	{
 	if ((!ERRPROCESS)&&(!commandList.at(i).isEmpty())) RunCommand(commandList.at(i),true);
         else return;
@@ -4165,7 +4175,7 @@ void Texmaker::UserTool4()
 {
 QStringList commandList=UserToolCommand[3].split("|");
 ERRPROCESS=false;
-for (int i = 0; i < commandList.size(); ++i) 
+for (int i = 0; i < commandList.size(); ++i)
 	{
 	if ((!ERRPROCESS)&&(!commandList.at(i).isEmpty())) RunCommand(commandList.at(i),true);
         else return;
@@ -4176,7 +4186,7 @@ void Texmaker::UserTool5()
 {
 QStringList commandList=UserToolCommand[4].split("|");
 ERRPROCESS=false;
-for (int i = 0; i < commandList.size(); ++i) 
+for (int i = 0; i < commandList.size(); ++i)
 	{
 	if ((!ERRPROCESS)&&(!commandList.at(i).isEmpty())) RunCommand(commandList.at(i),true);
         else return;
@@ -4228,6 +4238,21 @@ if ( utDlg->exec() )
 	}
 }
 
+void Texmaker::EditUserKeyReplacements()
+{
+UserKeyReplacementsDialog *utDlg = new UserKeyReplacementsDialog(this,tr("Edit &Key Replacements"));
+utDlg->UserKeyReplace=UserKeyReplace;
+utDlg->UserKeyReplaceAfterWord=UserKeyReplaceAfterWord;
+utDlg->UserKeyReplaceBeforeWord=UserKeyReplaceBeforeWord;
+utDlg->init();
+if ( utDlg->exec() ) {
+    UserKeyReplace=utDlg->UserKeyReplace;
+    UserKeyReplaceAfterWord=utDlg->UserKeyReplaceAfterWord;
+    UserKeyReplaceBeforeWord=utDlg->UserKeyReplaceBeforeWord;
+}
+}
+
+
 void Texmaker::WebPublish()
 {
 QString finame;
@@ -4235,9 +4260,25 @@ fileSave();
 if (singlemode) {finame=getName();}
 else {finame=MasterName;}
 if (finame=="untitled") finame="";
-WebPublishDialog *ttwpDlg = new WebPublishDialog(this,tr("Convert to Html"),ghostscript_command,latex_command,dvips_command,input_encoding); 
+WebPublishDialog *ttwpDlg = new WebPublishDialog(this,tr("Convert to Html"),ghostscript_command,latex_command,dvips_command,input_encoding);
 ttwpDlg->ui.inputfileEdit->setText(finame);
 ttwpDlg->exec();
+delete ttwpDlg;
+}
+
+
+void Texmaker::AnalyseText(){
+  TextAnalysisDialog *utDlg = new TextAnalysisDialog(this,tr("Text Analysis"));
+  utDlg->data=currentEditorView()->editor->toPlainText ();
+  utDlg->selectionStart=currentEditorView()->editor->textCursor().selectionStart();
+  utDlg->selectionEnd =currentEditorView()->editor->textCursor().selectionEnd ();
+  utDlg->init();
+  for (int i=0;i<StructureTreeWidget->topLevelItemCount ();i++)
+      //if (StructureTreeWidget->topLevelItem(i)->text(0)==MasterName)
+        utDlg->interpretStructureTree(StructureTreeWidget->topLevelItem(i));
+
+  utDlg->exec();
+  delete utDlg;
 }
 //////////////// MESSAGES - LOG FILE///////////////////////
 bool Texmaker::LogExists()
@@ -4366,6 +4407,10 @@ QString ll=item->data(Qt::UserRole).toString();
 int logline=ll.toInt(&ok,10)-1;
 OutputTextEdit->setCursorPosition(logline , 0);
 }
+void Texmaker::OutputViewVisibilityChanged(bool visible){
+    if (visible) OutputView->toggleViewAction()->setShortcut(Qt::Key_Escape);
+    else OutputView->toggleViewAction()->setShortcut(QKeySequence ());
+}
 
 ////////////////////////// ERRORS /////////////////////////////
 void Texmaker::LatexError()
@@ -4406,7 +4451,7 @@ while (tb.isValid())
 	while (j<expression.length())
 		{
 		lettre=expression.mid(j,1);
-		if (lettre=="(" || lettre==")") 
+		if (lettre=="(" || lettre==")")
 			{
 			pile.prepend(lettre);
 			j+=1;
@@ -4414,7 +4459,7 @@ while (tb.isValid())
 		else
 			{
 			mot="";
-			while (j<expression.length() && (expression.mid(j,1)!="(" && expression.mid(j,1)!=")")) 
+			while (j<expression.length() && (expression.mid(j,1)!="(" && expression.mid(j,1)!=")"))
 				{
 				mot+=expression.mid(j,1);
 				j+=1;
@@ -4465,7 +4510,7 @@ while (tb.isValid())
 			errorMessageList.append(rxWarning2.cap(1).replace("*",""));
 			errorLogList.append(QString::number(errorpar));
 			}
-		else 
+		else
 			{
 			if (!filestack.isEmpty()) errorFileList.append(filestack.last());
 			else errorFileList.append("");
@@ -4476,8 +4521,7 @@ while (tb.isValid())
  			}
 		errorpar=par;
 		}
-//	else if (expression.contains(QRegExp("^!")))
-	else if (expression.contains(QRegExp("^! (.*)")))
+	else if (expression.contains(QRegExp("^!")))
 		{
 		latexerror=expression.trimmed();
 		while (tb.isValid() && !expression.contains(rxLineError))
@@ -4513,16 +4557,6 @@ while (tb.isValid())
 			errorMessageList.append(latexerror.remove(rxLineError).replace("*",""));
 			errorLogList.append(QString::number(errorpar));
 			}
-		else 
-			{
-			//qDebug() << "Error";
-			if (!filestack.isEmpty()) errorFileList.append(filestack.last());
-			else errorFileList.append("");
-			errorTypeList.append("Error");
-			errorLineList.append("1");
-			errorMessageList.append(latexerror.replace("*",""));
-			errorLogList.append(QString::number(errorpar));
-			}
 		errorpar=par;
 		}
 	else if (expression.contains(QRegExp("^(Over|Under)(full \\\\[hv]box .*)")))
@@ -4549,7 +4583,7 @@ while (tb.isValid())
 			}
 		errorpar=par;
 		}
-	if (tb.isValid()) 
+	if (tb.isValid())
 		{
 		par++;
 		tb = tb.next();
@@ -4642,6 +4676,10 @@ else
 	}
 OutputTableWidget->show();
 OutputTextEdit->setCursorPosition(0 , 0);
+if (errorTypeList.contains("Error")) {
+     OutputView->show();    //show log when error
+     OutputTableWidget->setFocus();
+}
 }
 
 bool Texmaker::NoLatexErrors()
@@ -4659,7 +4697,7 @@ if (logpresent && !onlyErrorList.isEmpty())
 	if (errorIndex<onlyErrorList.size()-1) errorIndex=errorIndex+1;
 	if (errorIndex<0) errorIndex=0;
 	if (errorIndex>=onlyErrorList.count()) errorIndex=onlyErrorList.count()-1;
-	if (singlemode)// && onlyErrorList.at(errorIndex)!=0) 
+	if (singlemode)// && onlyErrorList.at(errorIndex)!=0)
 		{
 		line=errorLineList.at(onlyErrorList.at(errorIndex)).toInt();
 		for ( int i = 0; i <errorFileList.count(); i++ )
@@ -4693,7 +4731,7 @@ if (logpresent && !onlyErrorList.isEmpty())
 	if (errorIndex>0) errorIndex=errorIndex-1;
 	if (errorIndex<0) errorIndex=0;
 	if (errorIndex>=onlyErrorList.count()) errorIndex=onlyErrorList.count()-1;
-	if (singlemode)// && onlyErrorList.at(errorIndex)!=0) 
+	if (singlemode)// && onlyErrorList.at(errorIndex)!=0)
 		{
 		line=errorLineList.at(onlyErrorList.at(errorIndex)).toInt();
 		for ( int i = 0; i <errorFileList.count(); i++ )
@@ -4825,7 +4863,9 @@ for( its = shortcuts.begin(); its != shortcuts.end(); ++its )
 			newItem->setData(Qt::UserRole, its.key());
 			confDlg->ui.shorttableWidget->setRowCount(row+1);
 			confDlg->ui.shorttableWidget->setItem(row, 0, newItem);
-			confDlg->ui.shorttableWidget->setItem(row, 1, new QTableWidgetItem(its.value()));
+			newItem = new QTableWidgetItem(its.value());
+			newItem->setData(Qt::UserRole,its.value());//to revert the shortcut
+			confDlg->ui.shorttableWidget->setItem(row, 1, newItem);
 			row++;
 			}
 		}
@@ -4852,7 +4892,7 @@ if (confDlg->exec())
 	if (confDlg->ui.radioButton5->isChecked()) quickmode=5;
 	if (confDlg->ui.radioButton6->isChecked()) quickmode=6;
 	userquick_command=confDlg->ui.lineEditUserquick->text();
-	
+
 	latex_command=confDlg->ui.lineEditLatex->text();
 	pdflatex_command=confDlg->ui.lineEditPdflatex->text();
 	dvips_command=confDlg->ui.lineEditDvips->text();
@@ -4865,15 +4905,15 @@ if (confDlg->exec())
 	viewpdf_command=confDlg->ui.lineEditPdfviewer->text();
 	metapost_command=confDlg->ui.lineEditMetapost->text();
 	ghostscript_command=confDlg->ui.lineEditGhostscript->text();
-	
+
 	QString fam=confDlg->ui.comboBoxFont->lineEdit()->text();
 	int si=confDlg->ui.spinBoxSize->value();
 	QFont F(fam,si);
 	EditorFont=F;
-	
+
 	input_encoding=confDlg->ui.comboBoxEncoding->currentText();
 	stat3->setText(QString(" %1 ").arg(input_encoding));
-	
+
 	wordwrap=confDlg->ui.checkBoxWordwrap->isChecked();
 	completion=confDlg->ui.checkBoxCompletion->isChecked();
 	showline=confDlg->ui.checkBoxLinenumber->isChecked();
@@ -4924,7 +4964,7 @@ if (!singlemode)
 	stat1->setText(QString(" %1 ").arg(tr("Normal Mode")));
 	return;
 	}
-if (singlemode && currentEditorView())  
+if (singlemode && currentEditorView())
 	{
 	MasterName=getName();
 	if (MasterName=="untitled" || MasterName=="")
@@ -4942,18 +4982,6 @@ if (singlemode && currentEditorView())
 	}
 }
 
-void Texmaker::onOtherInstanceMessage(const QString &msg)  // Added slot for messages to the single instance
-{
-QStringList argv = msg.split("#!#");
-int argc = argv.size();
-for ( int i = 1; i < argc; ++i )
-	{
-	QString arg = argv[ i ];
-	if ( arg[0] != '-' )    load( arg );
-	if ( arg == "-master" ) ToggleMode();
-	if (( arg == "-line" ) && (i<argc-1))  setLine( argv[ ++i ] );
-	}
-}
 ////////////////// VIEW ////////////////
 
 void Texmaker::gotoNextDocument()
@@ -4992,22 +5020,19 @@ if (xfdlg->exec())
 void Texmaker::gotoBookmark1()
 {
 if ( !currentEditorView() ) return;
-int l=currentEditorView()->editor->UserBookmark[0];
-if (l>0) currentEditorView()->editor->gotoLine(l-1);
+currentEditorView()->editor->jumpToMarkPosition(currentEditorView()->editor->UserBookmark[1]);
 }
 
 void Texmaker::gotoBookmark2()
 {
 if ( !currentEditorView() ) return;
-int l=currentEditorView()->editor->UserBookmark[1];
-if (l>0) currentEditorView()->editor->gotoLine(l-1);
+currentEditorView()->editor->jumpToMarkPosition(currentEditorView()->editor->UserBookmark[2]);
 }
 
 void Texmaker::gotoBookmark3()
 {
 if ( !currentEditorView() ) return;
-int l=currentEditorView()->editor->UserBookmark[2];
-if (l>0) currentEditorView()->editor->gotoLine(l-1);
+currentEditorView()->editor->jumpToMarkPosition(currentEditorView()->editor->UserBookmark[3]);
 }
 
 //*********************************
@@ -5045,17 +5070,17 @@ int max;
 for (int i = 0; i < 412; i++)
 	{
 	max=i;
-	for (int j = i+1; j < 412; j++) 
+	for (int j = i+1; j < 412; j++)
 		{
 		if (list_score.at(j)>list_score.at(max)) max=j;
 		}
-	if (max!=i) 
+	if (max!=i)
 		{
 		list_num.swap(i,max);
 		list_score.swap(i,max);
 		}
 	}
-for ( int i = 0; i <=11; ++i ) 
+for ( int i = 0; i <=11; ++i )
 	{
 	if (list_score.at(i)>0) symbolMostused[i]=list_num.at(i);
 	}
@@ -5084,7 +5109,7 @@ actionstext.clear();
 while ( iterator.hasNext() )
 	{
 	QAction *action=iterator.next();
-        if (action && (!action->menu())  && (!action->data().toString().isEmpty())) 
+        if (action && (!action->menu())  && (!action->data().toString().isEmpty()))
 		{
 		actionstext.insert(action->data().toString(),action->text());
 		d=action->data().toString().section("/",0,0);
@@ -5095,7 +5120,7 @@ while ( iterator.hasNext() )
 			if (f==d && s!="none" && !s.isEmpty()) action->setShortcut(s);
 			}
 // 		its=shortcuts.find(action->data().toString());
-// 		if (its!=shortcuts.end()) 
+// 		if (its!=shortcuts.end())
 // 			{
 // 			s=*its;
 // 			if (s!="none" && !s.isEmpty()) action->setShortcut(s);
@@ -5114,12 +5139,12 @@ if (!tagsfile.open(QFile::ReadOnly)) model=new QStringListModel(completer);
 QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 QStringList words;
 QString line;
-while (!tagsfile.atEnd()) 
+while (!tagsfile.atEnd())
 	{
 	line = tagsfile.readLine();
 	if (!line.isEmpty()) words.append(line.trimmed());
 	}
-for (int i=0; i<labelitem.count();++i) 
+for (int i=0; i<labelitem.count();++i)
 	{
 	words.append("\\ref{"+labelitem.at(i)+"}");
 	words.append("\\pageref{"+labelitem.at(i)+"}");

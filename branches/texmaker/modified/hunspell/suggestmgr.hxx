@@ -51,13 +51,12 @@ public:
   ~SuggestMgr();
 
   int suggest(char*** slst, const char * word, int nsug, int * onlycmpdsug);
-  int ngsuggest(char ** wlst, char * word, int ns, HashMgr** pHMgr, int md);
+  int ngsuggest(char ** wlst, char * word, int ns, HashMgr* pHMgr);
   int suggest_auto(char*** slst, const char * word, int nsug);
   int suggest_stems(char*** slst, const char * word, int nsug);
   int suggest_pos_stems(char*** slst, const char * word, int nsug);
 
   char * suggest_morph(const char * word);
-  char * suggest_gen(char ** pl, int pln, char * pattern);
   char * suggest_morph_for_spelling_error(const char * word);
 
 private:
@@ -99,7 +98,6 @@ private:
    void bubblesort( char ** rwd, char ** rwd2, int * rsc, int n);
    void lcs(const char * s, const char * s2, int * l1, int * l2, char ** result);
    int lcslen(const char * s, const char* s2);
-   char * suggest_hentry_gen(hentry * rv, char * pattern);
 
 };
 

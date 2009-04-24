@@ -29,27 +29,10 @@
    <item row="0" column="2" colspan="2" >
     <widget class="QPushButton" name="findButton" >
      <property name="text" >
-      <string>Find</string>
+      <string>Find forward</string>
      </property>
      <property name="default" >
       <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="4" >
-    <widget class="QRadioButton" name="radioForward" >
-     <property name="text" >
-      <string>Forward</string>
-     </property>
-     <property name="checked" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="5" >
-    <widget class="QRadioButton" name="radioBackward" >
-     <property name="text" >
-      <string>Backward</string>
      </property>
     </widget>
    </item>
@@ -91,6 +74,13 @@
     <widget class="QPushButton" name="closeButton" >
      <property name="text" >
       <string>Close</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4" >
+    <widget class="QPushButton" name="findBackwardButton" >
+     <property name="text" >
+      <string>Find backward</string>
      </property>
     </widget>
    </item>

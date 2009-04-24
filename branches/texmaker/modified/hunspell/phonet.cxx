@@ -46,7 +46,7 @@ void init_phonet_hash(phonetable & parms)
   {
     int i, k;
 
-    for (i = 0; i < HASHSIZE; i++) {
+    for (i = 0; i < parms.hash_size; i++) {
       parms.hash[i] = -1;
     }
 

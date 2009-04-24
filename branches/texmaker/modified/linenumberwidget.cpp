@@ -25,7 +25,8 @@ p.setColor( backgroundRole(), QColor( "#ecffec" ) );
 setPalette( p );
 setToolTip(tr("Click to add or remove a bookmark"));
 connect( m_editor->verticalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( update() ) );
-connect( m_editor, SIGNAL( textChanged() ), this, SLOT( update() ) );
+//connect( m_editor, SIGNAL( textChanged() ), this, SLOT( lazyUpdate() ) );
+connect( m_editor, SIGNAL( linesChanged() ), this, SLOT( update() ) );
 }
 
 LineNumberWidget::~LineNumberWidget()
@@ -42,32 +43,34 @@ const QFontMetrics fm(numfont);
 int yOffset = m_editor->verticalScrollBar()->value();
 QTextDocument *doc = m_editor->document();
 int i = 1;
-QTextBlock p = doc->begin();
 QString numtext;
 const QBrush oldbrush=painter.brush();
 QPen oldpen(QColor("#136872"));
 oldpen.setStyle(Qt::SolidLine);
 painter.setPen(oldpen);
 painter.drawLine(width()-2,0,width()-2,height());
-while ( p.isValid() ) 
+
+
+QTextBlock p = doc->begin();
+while ( p.isValid() )
 	{
 	QPointF point = p.layout()->position();
-	if ( point.y() + 20 - yOffset < 0 ) 
+	if ( point.y() + 20 - yOffset < 0 )
 		{
 		i++;
 		p = p.next();
 		continue;
-		}		
+		}
 	if ( (int)(point.y()) - yOffset > height() ) break;
-	for (int j = 0; j < 3; ++j)
+	for (int j = 0; j <= 9; ++j)
 		{
-		if (m_editor->UserBookmark[j]==i) 
+		if (m_editor->UserBookmark[j].block==i-1)
  			{
 			const QBrush brush(QColor("#1B8EA6"));
 			painter.fillRect(2, (int)(point.y()) - yOffset,fm.width("0")+6,fm.lineSpacing(), brush);
 			const QPen pen(QColor("#FFFFFF"));
 			painter.setPen(pen);
-			painter.drawText(4, (int)(point.y()) - yOffset,width()-4,fm.lineSpacing(),Qt::AlignLeft | Qt::AlignTop,QString::number(j+1));
+			painter.drawText(4, (int)(point.y()) - yOffset,width()-4,fm.lineSpacing(),Qt::AlignLeft | Qt::AlignTop,QString::number(j));
  			}
 		}
 	painter.setPen(oldpen);
@@ -78,7 +81,7 @@ while ( p.isValid() )
 	i++;
 	p = p.next();
 	}
-	if (i>=10000) setFixedWidth(max);	
+	if (i>=10000) setFixedWidth(max);
 painter.end();
 }
 
@@ -87,22 +90,23 @@ void LineNumberWidget::mousePressEvent(QMouseEvent *e)
 e->accept();
 QPoint p = m_editor->viewport()->mapFromGlobal(e->globalPos());
 QTextCursor cur( m_editor->cursorForPosition(p) );
-int i = m_editor->linefromblock(cur.block());	
-if ( i==-1 ) return;
-for (int j = 0; j < 3; ++j)
+int i = m_editor->linefromblock(cur.block())-1;
+if ( i<0 ) return;
+for (int j = 1; j <  m_editor->UserBookmark.size(); ++j)
 	{
-	if (m_editor->UserBookmark[j]==i) 
+	if (m_editor->UserBookmark[j].block==i)
 		{
-		m_editor->UserBookmark[j]=0;
+		m_editor->UserBookmark[j].block=-1;
 		update();
 		return;
 		}
 	}
-for (int j = 0; j < 3; ++j)
+for (int j = 1; j < m_editor->UserBookmark.size(); ++j)
 	{
-	if (m_editor->UserBookmark[j]==0) 
+	if (m_editor->UserBookmark[j].block<0)
 		{
-		m_editor->UserBookmark[j]=i;
+		m_editor->UserBookmark[j].block=i;
+		m_editor->UserBookmark[j].index=0;
 		update();
 		return;
 		}
@@ -113,4 +117,3 @@ void LineNumberWidget::setFont(QFont efont)
 {
 numfont=efont;
 }
-

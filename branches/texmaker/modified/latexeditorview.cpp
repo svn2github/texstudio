@@ -46,6 +46,7 @@ findwidget=new FindWidget(this);
 mainlay->addWidget(findwidget);
 findwidget->SetEditor(editor);
 findwidget->hide();
+
 }
 
 LatexEditorView::~LatexEditorView()
@@ -69,4 +70,3 @@ void LatexEditorView::changeSettings(QFont & new_font,bool line)
   m_lineNumberWidget->setFixedWidth( fm.width( "00000" ) + 14 );
   setLineNumberWidgetVisible(line);
 }
-

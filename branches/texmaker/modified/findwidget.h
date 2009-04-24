@@ -16,20 +16,26 @@
 #include "latexeditor.h"
 
 class FindWidget : public QWidget
-{ 
+{
     Q_OBJECT
 
 public:
     FindWidget(QWidget* parent = 0);
     ~FindWidget();
     Ui::FindWidget ui;
+
 public slots:
-    virtual void doFind();
+    void doFind();
+    void doFindInvert();
     void SetEditor(LatexEditor *ed);
     void doHide();
 
 protected:
     LatexEditor *editor;
+    virtual void find(bool invert);
+
+ /*   virtual void keyPressEvent ( QKeyEvent * event );
+    virtual void keyReleaseEvent ( QKeyEvent * event );*/
 };
 
 #endif

@@ -41,7 +41,7 @@
 #include "logeditor.h"
 #include "gotolinedialog.h"
 #include "replacedialog.h"
-
+#include "textanalysis.h"
 
 
 typedef  QMap<LatexEditorView*, QString> FilesMap;
@@ -64,7 +64,6 @@ public slots:
 void load( const QString &f );
 void setLine( const QString &line );
 void ToggleMode();
-void onOtherInstanceMessage(const QString &);  // For messages for the single instance
 
 private:
 void setupMenus();
@@ -118,6 +117,7 @@ QStringList userClassList, userPaperList, userEncodingList, userOptionsList;
 QStringList structlist, labelitem, structitem;
 Userlist UserMenuName, UserMenuTag;
 UserCd UserToolName, UserToolCommand;
+QVector<QString> UserKeyReplace, UserKeyReplaceAfterWord, UserKeyReplaceBeforeWord;
 //dialogs
 QPointer<ReplaceDialog> replaceDialog;
 QPointer<GotoLineDialog> gotoLineDialog;
@@ -168,6 +168,8 @@ void editFind();
 void editFindNext();
 void editReplace();
 void editGotoLine();
+void editJumpToLastChange();
+void editJumpToLastChangeForward();
 void editComment();
 void editUncomment();
 void editIndent();
@@ -263,12 +265,15 @@ void UserTool3();
 void UserTool4();
 void UserTool5();
 void EditUserTool();
+void EditUserKeyReplacements();
 
 void WebPublish();
+void AnalyseText();
 
 void ViewLog();
 void ClickedOnOutput(int l);
 void ClickedOnLogLine(QTableWidgetItem *item);
+void OutputViewVisibilityChanged(bool visible);
 void LatexError();
 void DisplayLatexError();
 void NextError();

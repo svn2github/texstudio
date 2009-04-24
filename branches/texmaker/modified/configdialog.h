@@ -46,6 +46,8 @@ void browsePs2pdf();
 void browsePdfviewer();
 void browseMetapost();
 void browseGhostscript();
+
+void shortCutItemChanged ( QTableWidgetItem * item );
 };
 
 #endif

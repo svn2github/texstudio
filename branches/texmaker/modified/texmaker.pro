@@ -1,11 +1,9 @@
 TEMPLATE	= app
 LANGUAGE	= C++
 TARGET	 = texmaker
-QT += network
 CONFIG	+= qt warn_off release
 ###############################
 HEADERS	+= texmaker.h \
-	dsingleapplication.h \
 	symbollistwidget.h \
 	icondelegate.h \
 	latexeditor.h \
@@ -27,6 +25,7 @@ HEADERS	+= texmaker.h \
 	addoptiondialog.h \
 	quickdocumentdialog.h \
 	usermenudialog.h \
+	userkeyreplacementsdialog.h \
 	usertooldialog.h \
 	refdialog.h \
 	configdialog.h \
@@ -35,7 +34,7 @@ HEADERS	+= texmaker.h \
 	spellerdialog.h \
 	pstrickslistwidget.h \
 	blockdata.h \
-	parenmatcher.h \
+	textanalysis.h \
 	hunspell/affentry.hxx \
 	hunspell/affixmgr.hxx \
 	hunspell/atypes.hxx \
@@ -55,7 +54,6 @@ HEADERS	+= texmaker.h \
 	hunspell/hunzip.hxx \
 	hunspell/w_char.hxx
 SOURCES	+= main.cpp \
-	dsingleapplication.cpp \
 	texmaker.cpp \
 	symbollistwidget.cpp \
 	icondelegate.cpp \
@@ -78,6 +76,7 @@ SOURCES	+= main.cpp \
 	addoptiondialog.cpp \
 	quickdocumentdialog.cpp \
 	usermenudialog.cpp \
+	userkeyreplacementsdialog.cpp \
 	usertooldialog.cpp \
 	refdialog.cpp \
 	configdialog.cpp \
@@ -85,7 +84,7 @@ SOURCES	+= main.cpp \
 	webpublishdialog.cpp \
 	spellerdialog.cpp \
 	pstrickslistwidget.cpp \
-	parenmatcher.cpp \
+  textanalysis.cpp \
 	hunspell/affentry.cxx \
 	hunspell/affixmgr.cxx \
 	hunspell/csutil.cxx \
@@ -115,7 +114,8 @@ FORMS   += findwidget.ui\
 	aboutdialog.ui \
 	webpublishdialog.ui \
 	configdialog.ui \
-	spellerdialog.ui
+	spellerdialog.ui \
+  textanalysis.ui
 TRANSLATIONS += texmaker_fr.ts
 ################################
 unix:!macx {
@@ -161,11 +161,6 @@ utilities.files = utilities/blank.png \
 	utilities/psheader.txt \
 	utilities/style.css \
 	utilities/texmaker_fr.qm \
-	utilities/texmaker_de.qm \
-	utilities/texmaker_zh.qm \
-	utilities/qt_fr.qm \
-	utilities/qt_de.qm \
-	utilities/qt_zh.qm \
 	utilities/up.gif \
 	utilities/up_d.gif \
 	utilities/usermanual_en.html \
@@ -233,11 +228,6 @@ utilities.files = utilities/blank.png \
 	utilities/psheader.txt \
 	utilities/style.css \
 	utilities/texmaker_fr.qm \
-	utilities/texmaker_de.qm \
-	utilities/texmaker_zh.qm \
-	utilities/qt_fr.qm \
-	utilities/qt_de.qm \
-	utilities/qt_zh.qm \
 	utilities/up.gif \
 	utilities/up_d.gif \
 	utilities/usermanual_en.html \

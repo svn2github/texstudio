@@ -16,6 +16,9 @@
 #include <QFileDialog>
 #include <QColorDialog>
 #include <QDir>
+#include <QKeySequence>
+#include <QMessageBox>
+#include <QList>
 
 ConfigDialog::ConfigDialog(QWidget* parent): QDialog( parent)
 {
@@ -31,7 +34,7 @@ QFontDatabase fdb;
 ui.comboBoxFont->addItems( fdb.families() );
 
 ui.comboBoxEncoding->addItem("UTF-8");
-foreach (int mib, QTextCodec::availableMibs()) 
+foreach (int mib, QTextCodec::availableMibs())
 	{
 	QTextCodec *codec = QTextCodec::codecForMib(mib);
 	if (codec->name()!="UTF-8") ui.comboBoxEncoding->addItem(codec->name());
@@ -45,6 +48,8 @@ ui.labelGetDic->setOpenExternalLinks(true);
 connect( ui.pushButtonColorMath, SIGNAL(clicked()), this, SLOT(configureColorMath()));
 connect( ui.pushButtonColorCommand, SIGNAL(clicked()), this, SLOT(configureColorCommand()));
 connect( ui.pushButtonColorKeyword, SIGNAL(clicked()), this, SLOT(configureColorKeyword()));
+
+connect( ui.shorttableWidget, SIGNAL(itemChanged(QTableWidgetItem * )), this, SLOT(shortCutItemChanged(QTableWidgetItem * )));
 
 //pagequick
 connect(ui.radioButton6, SIGNAL(toggled(bool)),ui.lineEditUserquick, SLOT(setEnabled(bool)));
@@ -110,7 +115,7 @@ void ConfigDialog::changePage(QListWidgetItem *current, QListWidgetItem *previou
 void ConfigDialog::browseAspell()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse dictionary"),QDir::homePath(),"Dictionary (*.dic)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 //	location="\""+location+"\"";
@@ -121,7 +126,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::configureColorMath()
 {
 QColor color = QColorDialog::getColor(ui.pushButtonColorMath->palette().background().color(), this);
-if (color.isValid()) 
+if (color.isValid())
 	{
 	ui.pushButtonColorMath->setPalette(QPalette(color));
 	ui.pushButtonColorMath->setAutoFillBackground(true);
@@ -131,7 +136,7 @@ if (color.isValid())
 void ConfigDialog::configureColorCommand()
 {
 QColor color = QColorDialog::getColor(ui.pushButtonColorCommand->palette().background().color(), this);
-if (color.isValid()) 
+if (color.isValid())
 	{
 	ui.pushButtonColorCommand->setPalette(QPalette(color));
 	ui.pushButtonColorCommand->setAutoFillBackground(true);
@@ -141,7 +146,7 @@ if (color.isValid())
 void ConfigDialog::configureColorKeyword()
 {
 QColor color = QColorDialog::getColor(ui.pushButtonColorKeyword->palette().background().color(), this);
-if (color.isValid()) 
+if (color.isValid())
 	{
 	ui.pushButtonColorKeyword->setPalette(QPalette(color));
 	ui.pushButtonColorKeyword->setAutoFillBackground(true);
@@ -152,7 +157,7 @@ if (color.isValid())
 void ConfigDialog::browseLatex()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\" -interaction=nonstopmode %.tex";
@@ -163,7 +168,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::browseDvips()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\" -o %.ps %.dvi";
@@ -174,7 +179,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::browseBibtex()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\" %.aux";
@@ -185,7 +190,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::browseMakeindex()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\" %.idx";
@@ -196,7 +201,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::browseDviviewer()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\" %.dvi";
@@ -207,7 +212,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::browsePsviewer()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\" %.ps";
@@ -218,7 +223,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::browsePdflatex()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\" -interaction=nonstopmode %.tex";
@@ -229,7 +234,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::browseDvipdfm()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\" %.dvi";
@@ -240,7 +245,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::browsePs2pdf()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\" %.ps";
@@ -251,7 +256,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::browsePdfviewer()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\" %.pdf";
@@ -262,7 +267,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::browseMetapost()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\" --interaction nonstopmode ";
@@ -273,7 +278,7 @@ if ( !location.isEmpty() )
 void ConfigDialog::browseGhostscript()
 {
 QString location=QFileDialog::getOpenFileName(this,tr("Browse program"),QDir::rootPath(),"Program (*)",0,QFileDialog::DontResolveSymlinks);
-if ( !location.isEmpty() ) 
+if ( !location.isEmpty() )
 	{
 	location.replace(QString("\\"),QString("/"));
 	location="\""+location+"\"";
@@ -282,3 +287,33 @@ if ( !location.isEmpty() )
 }
 
 
+void ConfigDialog::shortCutItemChanged ( QTableWidgetItem * item ){
+    if (item==NULL) return;
+    if (QString("none").compare(item->text(),Qt::CaseInsensitive)==0) return;
+    if (ui.shorttableWidget->currentItem ()==NULL) return;
+
+    QKeySequence newSeq(item->text());
+    if (QKeySequence(item->text()) == QKeySequence()){
+        QMessageBox::warning(this, tr("Texmaker"),
+                   tr("The shortcut you entered is invalid."),
+                   QMessageBox::Ok, QMessageBox::Ok);
+        item->setText(item->data(Qt::UserRole).toString());
+        return;
+    }
+    QString identicalShortcuts = "";
+    for (int i=0;i<ui.shorttableWidget->rowCount();i++)
+        if (QKeySequence(ui.shorttableWidget->item(i,1)->text())==newSeq && i!=item->row())
+            identicalShortcuts+=ui.shorttableWidget->item(i,0)->text()+"\n";
+    if (identicalShortcuts=="") return;
+
+    switch (QMessageBox::warning(this, tr("Texmaker"),
+                                 tr("The shortcut you entered is the same as the one of this command: \n")+identicalShortcuts+tr("\n Should I delete this other shortcut?"),
+                                 QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes))
+    {
+        case QMessageBox::Yes:
+            for (int i=0;i<ui.shorttableWidget->rowCount();i++)
+                if (QKeySequence(ui.shorttableWidget->item(i,1)->text())==newSeq && i!=item->row())
+                    ui.shorttableWidget->item(i,1)->setText("none");
+        break;
+    }
+}
