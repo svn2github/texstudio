@@ -26,6 +26,7 @@
 ** contact the sales department at qt-sales@nokia.com.
 **
 **************************************************************************/
+
 #include "styleanimator.h"
 
 #include <QtGui/QStyleOption>

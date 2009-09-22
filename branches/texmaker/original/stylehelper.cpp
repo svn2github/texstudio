@@ -26,6 +26,7 @@
 ** contact the sales department at qt-sales@nokia.com.
 **
 **************************************************************************/
+
 #include "stylehelper.h"
 
 #include <QtGui/QPixmapCache>

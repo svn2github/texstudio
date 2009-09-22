@@ -30,6 +30,7 @@
 #ifndef STYLEHELPER_H
 #define STYLEHELPER_H
 
+
 #include <QtCore/QRect>
 #include <QtGui/QPainter>
 #include <QtGui/QApplication>
