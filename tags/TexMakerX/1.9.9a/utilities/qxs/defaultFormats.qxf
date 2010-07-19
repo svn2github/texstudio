@@ -1,0 +1,176 @@
+<!DOCTYPE QXF>
+<QXF version="1.0" >
+    <format id="comment" >
+        <bold>false</bold>
+        <italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+        <foreground>#808080</foreground>
+    </format>
+    <format id="keyword" >
+        <bold>false</bold>
+        <italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+        <foreground>#800000</foreground>
+    </format>
+    <format id="extra-keyword" >
+        <bold>true</bold>
+        <italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+        <foreground>#0095ff</foreground>
+    </format>
+    <format id="math-keyword" >
+        <bold>false</bold>
+        <italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+        <foreground>#808000</foreground>
+    </format>
+    <format id="verbatim" >
+        <foreground>#008080</foreground>
+    </format>
+<!--    <format id="match" >
+        <bold>true</bold>
+        <italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+        <foreground>#ff0000</foreground>
+    </format>-->
+    <format id="braceMatch" >
+        <bold>true</bold>
+        <italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+        <background>#ffff00</background>
+        <foreground>#ff0000</foreground>
+    </format>
+    <format id="braceMismatch" >
+        <bold>true</bold>
+        <italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+        <background>#ff0000</background>
+        <foreground>#ffff00</foreground>
+    </format>
+    <format id="search" >
+		<bold>false</bold>
+		<italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+		<background>#ffff00</background>
+		<foreground>#000000</foreground>
+    </format>
+    <format id="numbers" >
+        <bold>false</bold>
+        <italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+        <foreground>#008000</foreground>
+    </format>
+    <format id="text" >
+        <bold>false</bold>
+        <italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+        <foreground>#ff0000</foreground>
+    </format>
+    <format id="escapeseq" >
+        <bold>false</bold>
+        <italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+        <foreground>#ff0088</foreground>
+    </format>
+    <format id="spellingMistake" >
+        <waveUnderline>true</waveUnderline>
+        <linescolor>#FF0000</linescolor>
+    </format>
+    <format id="temporaryCodeCompletion" >
+        <italic>true</italic>
+        <foreground>#0000FF</foreground>
+    </format>
+   <format id="environment" >
+        <bold>false</bold>
+        <italic>false</italic>
+        <overline>false</overline>
+        <underline>false</underline>
+        <strikeout>false</strikeout>
+        <waveUnderline>false</waveUnderline>
+        <foreground>#000080</foreground>
+    </format>
+	<format id="referencePresent" >
+		<bold>false</bold>
+		<italic>false</italic>
+		<overline>false</overline>
+		<underline>false</underline>
+		<strikeout>false</strikeout>
+		<waveUnderline>false</waveUnderline>
+		<foreground>#008000</foreground>
+	</format>
+	<format id="referenceMissing" >
+		<bold>false</bold>
+		<italic>false</italic>
+		<overline>false</overline>
+		<underline>false</underline>
+		<strikeout>false</strikeout>
+		<waveUnderline>true</waveUnderline>
+		<foreground>#008000</foreground>
+	</format>
+	<format id="referenceMultiple" >
+		<bold>false</bold>
+		<italic>false</italic>
+		<overline>false</overline>
+		<underline>false</underline>
+		<strikeout>false</strikeout>
+		<waveUnderline>true</waveUnderline>
+		<foreground>#800080</foreground>
+	</format>
+	<format id="citationPresent" >
+		<bold>false</bold>
+		<italic>false</italic>
+		<overline>false</overline>
+		<underline>false</underline>
+		<strikeout>false</strikeout>
+		<waveUnderline>false</waveUnderline>
+		<foreground>#008000</foreground>
+	</format>
+	<format id="citationMissing" >
+		<bold>false</bold>
+		<italic>false</italic>
+		<overline>false</overline>
+		<underline>false</underline>
+		<strikeout>false</strikeout>
+		<waveUnderline>true</waveUnderline>
+		<foreground>#008000</foreground>
+	</format>
+	<format id="current" >
+		<background>#EEEEFF</background>
+	</format>
+	<format id="selection" >
+		<background>#AAFFFF</background>
+	</format>
+</QXF>
