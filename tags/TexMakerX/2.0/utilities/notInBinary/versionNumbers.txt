@@ -1,3 +1,0 @@
-aboutdialog.cpp
-utilities\texmaker.spec
-utilities\notin...\texmaker.iss
