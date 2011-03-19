@@ -1,0 +1,294 @@
+<!DOCTYPE QNFA>
+<QNFA language="(La-)TeX" extensions="tex;sty;cls" defaultLineMark="">
+<!--
+parenthesis weights:
+40: \[ \]  $   \(  \[
+30: \begin{..}
+20: \verb*  *
+10: { }
+8-2: \part, \chapter, \section, ...  (very low weight, because they are difficult to match, e.g in { \n .. \section \n .. })
+0: (, ), \{, \}, [, ]
+(if you change this, don't forget to also update the values for user defined
+environments in smallUsefulFunctions.cpp)
+-->
+	<sequence parenthesis="round:open" parenthesisWeight="00">\(</sequence>
+	<sequence parenthesis="round:close" parenthesisWeight="00">\)</sequence>
+	<sequence parenthesis="texcurly:open" parenthesisWeight="00">\\{</sequence>
+	<sequence parenthesis="texcurly:close" parenthesisWeight="00">\\}</sequence>
+	<sequence parenthesis="square:open" parenthesisWeight="00">\[</sequence>
+	<sequence parenthesis="square:close" parenthesisWeight="00">\]</sequence>
+	
+	<context id="verbatim" format="verbatim" transparency="true">
+		<start parenthesis="verbatim:open@nocomplete" parenthesisWeight="30" fold="true" format="extra-keyword">\\begin{verbatim}</start>
+		<stop parenthesis="verbatim:close@nocomplete" parenthesisWeight="30" fold="true" format="extra-keyword">\\end{verbatim}</stop>
+
+		<sequence parenthesis="curly:open" parenthesisWeight="10">\{</sequence>
+ 		<sequence parenthesis="curly:close" parenthesisWeight="10">\}</sequence>
+	</context>
+	<context id="verbatimS" format="verbatim" transparency="true">
+		<start parenthesis="verbatimS:open@nocomplete" parenthesisWeight="30" fold="true" format="extra-keyword">\\begin{verbatim\*}</start>
+		<stop parenthesis="verbatimS:close@nocomplete" parenthesisWeight="30" fold="true" format="extra-keyword">\\end{verbatim\*}</stop>
+
+		<sequence parenthesis="curly:open">\{</sequence>
+ 		<sequence parenthesis="curly:close">\}</sequence>
+	</context>
+
+	<word id="keywords/single" ambiguous="true" format="keyword">\\[\\%\$]</word>
+	<sequence parenthesis="curly:open" parenthesisWeight="10" indent="1" fold="1">\{</sequence>
+	<sequence parenthesis="curly:close" parenthesisWeight="10" indent="1" fold="1">\}</sequence>
+
+	<context id="verb$" format="verbatim">
+		<start parenthesis="verb$:open" parenthesisWeight="20" format="keyword">\\verb$</start>
+		<stop parenthesis="verb$:close" parenthesisWeight="20" format="keyword">\$</stop>
+	</context>
+	<context id="verb+" format="verbatim">
+		<start parenthesis="verb+:open" parenthesisWeight="20" format="keyword">\\verb\+</start>
+		<stop parenthesis="verb+:close" parenthesisWeight="20" format="keyword">\+</stop>
+	</context>
+	<context id="verb-" format="verbatim">
+		<start parenthesis="verb-:open" parenthesisWeight="20" format="keyword">\\verb\-</start>
+		<stop parenthesis="verb-:close" parenthesisWeight="20" format="keyword">\-</stop>
+	</context>
+	<context id="verb1" format="verbatim">
+		<start parenthesis="verb1:open" parenthesisWeight="20" format="keyword">\\verb1</start>
+		<stop parenthesis="verb1:close" parenthesisWeight="20" format="keyword">1</stop>
+	</context>
+	<context id="verb!" format="verbatim">
+		<start parenthesis="verb!:open" parenthesisWeight="20" format="keyword">\\verb!</start>
+		<stop parenthesis="verb!:close" parenthesisWeight="20" format="keyword">!</stop>
+	</context>
+	<context id="verb." format="verbatim">
+		<start parenthesis="verb.:open" parenthesisWeight="20" format="keyword">\\verb\.</start>
+		<stop parenthesis="verb.:close" parenthesisWeight="20" format="keyword">\.</stop>
+	</context>
+	<context id="verb@" format="verbatim">
+		<start parenthesis="verb@:open" parenthesisWeight="20" format="keyword">\\verb@</start>
+		<stop parenthesis="verb@:close" parenthesisWeight="20" format="keyword">@</stop>
+	</context>
+	<context id="verb#" format="verbatim">
+		<start parenthesis="verb#:open" parenthesisWeight="20" format="keyword">\\verb#</start>
+		<stop parenthesis="verb#:close" parenthesisWeight="20" format="keyword">#</stop>
+	</context>
+	<context id="verb|" format="verbatim">
+		<start parenthesis="verb|:open" parenthesisWeight="20" format="keyword">\\verb\|</start>
+		<stop parenthesis="verb|:close" parenthesisWeight="20" format="keyword">\|</stop>
+	</context>
+	<context id="verb/" format="verbatim">
+		<start parenthesis="verb/:open" parenthesisWeight="20" format="keyword">\\verb/</start>
+		<stop parenthesis="verb/:close" parenthesisWeight="20" format="keyword">/</stop>
+	</context>
+	<context id="verb\" format="verbatim">
+		<start parenthesis="verb\:open" parenthesisWeight="20" format="keyword">\\verb\\</start>
+		<stop parenthesis="verb\:close" parenthesisWeight="20" format="keyword">\\</stop>
+	</context>
+	<context id="verb_" format="verbatim">
+		<start parenthesis="verb_:open" parenthesisWeight="20" format="keyword">\\verb_</start>
+		<stop parenthesis="verb_:close" parenthesisWeight="20" format="keyword">_</stop>
+	</context>
+  
+	<context id="comment/single" format="commentTodo" stayOnLine="true" >
+		<start>%TODO</start>
+		<start>%todo</start>
+		<stop exclusive="false">\n</stop>
+	</context>
+
+	<context id="comment/single" format="comment" stayOnLine="true" >
+		<start>%</start>
+		<stop exclusive="false">\n</stop>
+	</context>
+	
+	
+	
+
+	
+	<context id="mathmode$" format="numbers" transparency="true">
+		<start parenthesis="math:open" parenthesisWeight="40" fold="1" >\$</start>
+		<stop parenthesis="math:close" parenthesisWeight="40" fold="1" >\$</stop>
+
+		<context id="mathmodeMatrix1" format="numbers" transparency="true">
+			<start parenthesis="mathEA12:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{array}</start>
+			<stop parenthesis="mathEA12:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{array}</stop>
+			<start parenthesis="mathEA5:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{matrix}</start>
+			<stop parenthesis="mathEA5:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{matrix}</stop>
+			<start parenthesis="mathEA6:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{bmatrix}</start>
+			<stop parenthesis="mathEA6:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{bmatrix}</stop>
+			<start parenthesis="mathEA7:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{pmatrix}</start>
+			<stop parenthesis="mathEA7:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{pmatrix}</stop>
+			<start parenthesis="mathEA8:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{vmatrix}</start>
+			<stop parenthesis="mathEA8:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{vmatrix}</stop>
+			<start parenthesis="mathEA9:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{Bmatrix}</start>
+			<stop parenthesis="mathEA9:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{Bmatrix}</stop>
+			<start parenthesis="mathEA10:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{Vmatrix}</start>
+			<stop parenthesis="mathEA10:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{Vmatrix}</stop>
+			<start parenthesis="mathEA11:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{smallmatrix}</start>
+			<stop parenthesis="mathEA11:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{smallmatrix}</stop>
+
+			<sequence id="keywords/single" format="math-keyword">\\[a-zA-Z]+</sequence>
+		</context>
+    
+		<sequence id="keywords/single" format="math-keyword">\\[a-zA-Z]+</sequence>
+	</context>
+
+	<context id="mathmodeNormal" format="numbers" transparency="true">
+		<start parenthesis="mathN1:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{math}</start>
+		<stop parenthesis="mathN1:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{math}</stop>
+		<start parenthesis="mathN2:open" parenthesisWeight="40" fold="1" >\\\(</start>
+		<stop parenthesis="mathN2:close" parenthesisWeight="40" fold="1" >\\\)</stop>
+
+		<context id="mathmodeMatrix2" format="numbers" transparency="true">
+			  <start parenthesis="mathEA12:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{array}</start>
+			  <stop parenthesis="mathEA12:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{array}</stop>
+			  <start parenthesis="mathEA5:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{matrix}</start>
+			  <stop parenthesis="mathEA5:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{matrix}</stop>
+			  <start parenthesis="mathEA6:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{bmatrix}</start>
+			  <stop parenthesis="mathEA6:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{bmatrix}</stop>
+			  <start parenthesis="mathEA7:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{pmatrix}</start>
+			  <stop parenthesis="mathEA7:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{pmatrix}</stop>
+			  <start parenthesis="mathEA8:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{vmatrix}</start>
+			  <stop parenthesis="mathEA8:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{vmatrix}</stop>
+			  <start parenthesis="mathEA9:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{Bmatrix}</start>
+			  <stop parenthesis="mathEA9:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{Bmatrix}</stop>
+			  <start parenthesis="mathEA10:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{Vmatrix}</start>
+			  <stop parenthesis="mathEA10:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{Vmatrix}</stop>
+			  <start parenthesis="mathEA11:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{smallmatrix}</start>
+			  <stop parenthesis="mathEA11:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{smallmatrix}</stop>
+
+			  <sequence id="keywords/single" format="math-keyword">\\[a-zA-Z]+</sequence>
+		</context>
+
+		<sequence id="keywords/single" format="math-keyword">\\[a-zA-Z]+</sequence>
+
+	</context>
+	
+	<context id="mathmodeDisplay" format="numbers" transparency="true">
+		<start parenthesis="mathD1:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{displaymath}</start>
+		<stop parenthesis="mathD1:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{displaymath}</stop>
+		<start parenthesis="mathD2:open" parenthesisWeight="40" fold="1" >\\\[</start>
+		<stop parenthesis="mathD2:close" parenthesisWeight="40" fold="1" >\\\]</stop>
+		<start parenthesis="mathD3:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{equation}</start>
+		<stop parenthesis="mathD3:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{equation}</stop>
+		<start parenthesis="mathD4:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{equation\*}</start>
+		<stop parenthesis="mathD4:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{equation\*}</stop>
+
+		<context id="mathmodeMatrix3" format="numbers" transparency="true">
+			<start parenthesis="mathEA12:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{array}</start>
+			<stop parenthesis="mathEA12:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{array}</stop>
+			<start parenthesis="mathEA5:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{matrix}</start>
+			<stop parenthesis="mathEA5:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{matrix}</stop>
+			<start parenthesis="mathEA6:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{bmatrix}</start>
+			<stop parenthesis="mathEA6:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{bmatrix}</stop>
+			<start parenthesis="mathEA7:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{pmatrix}</start>
+			<stop parenthesis="mathEA7:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{pmatrix}</stop>
+			<start parenthesis="mathEA8:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{vmatrix}</start>
+			<stop parenthesis="mathEA8:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{vmatrix}</stop>
+			<start parenthesis="mathEA9:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{Bmatrix}</start>
+			<stop parenthesis="mathEA9:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{Bmatrix}</stop>
+			<start parenthesis="mathEA10:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{Vmatrix}</start>
+			<stop parenthesis="mathEA10:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{Vmatrix}</stop>
+			<start parenthesis="mathEA11:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{smallmatrix}</start>
+			<stop parenthesis="mathEA11:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{smallmatrix}</stop>
+
+			<sequence id="keywords/single" format="math-keyword">\\[a-zA-Z]+</sequence>
+		</context>
+
+		<sequence id="keywords/single" format="math-keyword">\\[a-zA-Z]+</sequence>
+	</context>
+
+	<context id="mathmodeEqnArray" format="numbers" transparency="true">
+		<start parenthesis="mathEA1:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{eqnarray}</start>
+		<stop parenthesis="mathEA1:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{eqnarray}</stop>
+		<start parenthesis="mathEA2:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{align}</start>
+		<stop parenthesis="mathEA2:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{align}</stop>
+		<start parenthesis="mathEA3:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{eqnarray\*}</start>
+		<stop parenthesis="mathEA3:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{eqnarray\*}</stop>
+		<start parenthesis="mathEA4:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{align\*}</start>
+		<stop parenthesis="mathEA4:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{align\*}</stop>
+		<start parenthesis="mathEA5:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{flalign}</start>
+		<stop parenthesis="mathEA5:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{flalign}</stop>
+		<start parenthesis="mathEA6:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{flalign\*}</start>
+		<stop parenthesis="mathEA6:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{flalign\*}</stop>
+		<start parenthesis="mathEA7:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{alignat}</start>
+		<stop parenthesis="mathEA7:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{alignat}</stop>
+		<start parenthesis="mathEA8:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{alignat\*}</start>
+		<stop parenthesis="mathEA8:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{alignat\*}</stop>
+		<start parenthesis="mathEA9:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{gather}</start>
+		<stop parenthesis="mathEA9:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{gather}</stop>
+		<start parenthesis="mathEA10:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{gather\*}</start>
+		<stop parenthesis="mathEA10:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{gather\*}</stop>
+		<start parenthesis="mathEA11:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{multline}</start>
+		<stop parenthesis="mathEA11:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{multline}</stop>
+		<start parenthesis="mathEA12:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{multline\*}</start>
+		<stop parenthesis="mathEA12:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{multline\*}</stop>
+
+		<context id="mathmodeMatrix4" format="numbers" transparency="true">
+			<start parenthesis="mathEA12:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{array}</start>
+			<stop parenthesis="mathEA12:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{array}</stop>
+			<start parenthesis="mathEA5:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{matrix}</start>
+			<stop parenthesis="mathEA5:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{matrix}</stop>
+			<start parenthesis="mathEA6:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{bmatrix}</start>
+			<stop parenthesis="mathEA6:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{bmatrix}</stop>
+			<start parenthesis="mathEA7:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{pmatrix}</start>
+			<stop parenthesis="mathEA7:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{pmatrix}</stop>
+			<start parenthesis="mathEA8:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{vmatrix}</start>
+			<stop parenthesis="mathEA8:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{vmatrix}</stop>
+			<start parenthesis="mathEA9:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{Bmatrix}</start>
+			<stop parenthesis="mathEA9:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{Bmatrix}</stop>
+			<start parenthesis="mathEA10:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{Vmatrix}</start>
+			<stop parenthesis="mathEA10:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{Vmatrix}</stop>
+			<start parenthesis="mathEA11:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{smallmatrix}</start>
+			<stop parenthesis="mathEA11:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{smallmatrix}</stop>
+
+			<sequence id="keywords/single" format="math-keyword">\\[a-zA-Z]+</sequence>
+		</context>
+
+		<sequence id="keywords/single" format="math-keyword">\\[a-zA-Z]+</sequence>
+        </context>
+
+        <context id="tabular" format="normal" transparency="true">
+                <start parenthesis="tabularN1:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{tabular}</start>
+                <stop parenthesis="tabularN1:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{tabular}</stop>
+                <start parenthesis="tabularN2:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{tabular\*}</start>
+                <stop parenthesis="tabularN2:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{tabular\*}</stop>
+                <start parenthesis="tabularN3:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{tabularx}</start>
+                <stop parenthesis="tabularN3:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{tabularx}</stop>
+                <start parenthesis="tabularN3:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{longtable}</start>
+                <stop parenthesis="tabularN3:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{longtable}</stop>
+                <start parenthesis="tabularN3:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{supertabular}</start>
+                <stop parenthesis="tabularN3:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{supertabular}</stop>
+
+                <sequence id="keywords/single" ambiguous="true" format="keyword">\\[a-zA-Z]+</sequence>
+        </context>
+
+	<context id="tabbing" format="normal" transparency="true">
+                <start parenthesis="tabbingN1:open@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\begin{tabbing}</start>
+                <stop parenthesis="tabbingN1:close@nocomplete" parenthesisWeight="40" fold="1" format="extra-keyword">\\end{tabbing}</stop>
+
+                <sequence id="keywords/single" ambiguous="true" format="keyword">\\[a-zA-Z]+</sequence>
+        </context>
+
+	<word parenthesis="block:open@nocomplete" parenthesisWeight="30" fold="1" indent="1" ambiguous="true" format="extra-keyword">\\begin{[^}]*}</word>
+	<word parenthesis="block:close@nocomplete" parenthesisWeight="30" fold="1" indent="1" format="extra-keyword" >\\end{[^}]*}</word>
+<!--
+        <context id="env" format="normal" transparency="true">
+                <start parenthesis="env:open@nocomplete" parenthesisWeight="30" fold="true" format="extra-keyword">\\begin{[^}]*}</start>
+                <stop parenthesis="env:close@nocomplete" parenthesisWeight="30" fold="true" format="extra-keyword">\\end{[^}]*}</stop>
+
+                <sequence parenthesis="curly:open" parenthesisWeight="10">\{</sequence>
+                <sequence parenthesis="curly:close" parenthesisWeight="10">\}</sequence>
+        </context>
+-->
+	<list id="keywords/block" format="extra-keyword">
+		<word parenthesis="part:boundary@nomatch" parenthesisWeight="8" fold="true">\\part</word>
+		<word parenthesis="chapter:boundary@nomatch" parenthesisWeight="7" fold="true">\\chapter</word>
+		<word parenthesis="section:boundary@nomatch" parenthesisWeight="6" fold="true">\\section</word>
+		<word parenthesis="subsection:boundary@nomatch" parenthesisWeight="5" fold="true">\\subsection</word>
+		<word parenthesis="subsubsection:boundary@nomatch" parenthesisWeight="4" fold="true">\\subsubsection</word>
+		<word parenthesis="paragraph:boundary@nomatch" parenthesisWeight="3" fold="true" >\\paragraph</word>
+		<word parenthesis="subparagraph:boundary@nomatch" parenthesisWeight="2" fold="true" >\\subparagraph</word>
+	</list>
+	
+	<!--sequence instead of word so things like \abc434 are correctly highlighted -->
+	<sequence id="keywords/single" ambiguous="true" format="keyword">\\[a-zA-Z]+</sequence>
+</QNFA>
+
+
