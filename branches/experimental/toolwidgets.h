@@ -38,7 +38,7 @@ private:
 	bool mCenter;
 };
 
-class OutputViewWidget: public QDockWidget{
+class OutputViewWidget: public QFrame{
 	Q_OBJECT
 public:
 	OutputViewWidget(QWidget * parent = 0);
@@ -53,7 +53,7 @@ public:
 	int getNextSearchResultColumn(QString text,int col);
 	bool childHasFocus();
 	int getShownPage(){
-		return OutputLayout->currentIndex();
+		return OutputStackWidget->currentIndex();
 	}
 
 	virtual void changeEvent(QEvent *event);
@@ -84,7 +84,7 @@ private:
 	QTreeView *OutputTree;
 	LogEditor *OutputTextEdit,*OutputLogTextEdit;	
 	QTabBar *logViewerTabBar; //header to select outp (if tabbedLogView, then it is OutputView's TitleBarWidget)
-	QStackedWidget*	OutputLayout;
+	QStackedWidget*	OutputStackWidget;
 	//Latex errors
 	LatexLogModel * logModel; 
 	SearchResultModel *searchResultModel;
@@ -110,54 +110,6 @@ protected:
         void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
         //void drawDisplay( QPainter* painter, const QStyleOptionViewItem& option, const QRect& rect, const QString& text ) const;
         QSize sizeHint(const QStyleOptionViewItem &option,const QModelIndex &index) const;
-};
-
-class CustomWidgetList: public QDockWidget{
-	Q_OBJECT
-public:
-	CustomWidgetList(QWidget *p=0);
-	void addWidget(QWidget* widget, const QString& id, const QString& text, const QString& iconName);
-	void setWidgetText(const QString& id, const QString& text);
-	void setWidgetText(QWidget* widget, const QString& text);
-	void setWidgetIcon(const QString& id, const QString& icon);
-	void setWidgetIcon(QWidget* widget, const QString& icon);
-	int widgetCount() const;
-	void setHiddenWidgets(const QString& hidden); 
-	QString hiddenWidgets() const; 
-	QWidget* widget(int i) const;
-	QWidget* widget(const QString& id) const;
-	void setCurrentWidget(QWidget* widget);
-	QWidget* currentWidget() const;
-	bool isNewLayoutStyleEnabled() const;
-signals:
-	void widgetContextMenuRequested(QWidget* widget, const QPoint& globalPosition);
-public slots:
-	void showWidgets(bool newLayoutStyle);
-private slots:
-	void showPageFromAction();
-	void currentWidgetChanged(int i);
-	void toggleWidgetFromAction(bool on);
-	void customContextMenuRequested(const QPoint& localPosition);	
-private:
-	void showWidget(const QString& id);
-	void hideWidget(const QString& id);
-	//void addWidgetOld(QWidget* widget, const QString& id, const QString& text, const QString& iconName, const bool visible);
-//	void addWidgetNew(QWidget* widget, const QString& id, const QString& text, const QString& iconName, const bool visible);
-	QString widgetId(QWidget* widget) const;
-	
-	
-	QStringList hiddenWidgetsIds;
-	QList<QWidget*> widgets;
-	bool newStyle;
-	
-	//old layout
-	QToolBox *toolbox;
-		
-	//new layout
-	QFrame* frame;
-	QStackedWidget* stack;
-	QToolBar* toolbar;
-		
 };
 
 #endif 

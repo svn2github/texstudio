@@ -80,23 +80,23 @@
         <file>images/accent8.png</file>
         <file>images/accent9.png</file>
         <file>images/accent10.png</file>
-		<file>images/font_emph48.png</file>
-		<file>images/font_textbf48.png</file>
-		<file>images/font_textit48.png</file>
-		<file>images/font_textsc48.png</file>
-		<file>images/font_textsf48.png</file>
-		<file>images/font_textsl48.png</file>
-		<file>images/font_texttt48.png</file>
-		<file>images/font_underline48.png</file>
-		<file>images/font_mathrm.png</file>
-		<file>images/font_mathit.png</file>
-		<file>images/font_mathbf.png</file>
-		<file>images/font_mathsf.png</file>
-		<file>images/font_mathtt.png</file>
-		<file>images/font_mathcal.png</file>
-		<file>images/font_mathbb.png</file>
-		<file>images/font_mathfrak.png</file>
-		<file>images/webpublish.png</file>
+        <file>images/font_emph48.png</file>
+        <file>images/font_textbf48.png</file>
+        <file>images/font_textit48.png</file>
+        <file>images/font_textsc48.png</file>
+        <file>images/font_textsf48.png</file>
+        <file>images/font_textsl48.png</file>
+        <file>images/font_texttt48.png</file>
+        <file>images/font_underline48.png</file>
+        <file>images/font_mathrm.png</file>
+        <file>images/font_mathit.png</file>
+        <file>images/font_mathbf.png</file>
+        <file>images/font_mathsf.png</file>
+        <file>images/font_mathtt.png</file>
+        <file>images/font_mathcal.png</file>
+        <file>images/font_mathbb.png</file>
+        <file>images/font_mathfrak.png</file>
+        <file>images/webpublish.png</file>
         <file>images/back.png</file>
         <file>images/forward.png</file>
         <file>images/home.png</file>
@@ -136,7 +136,7 @@
         <file>images/part.png</file>
         <file>images/1rightarrow.png</file>
         <file>images/2rightarrow.png</file>
-		<file>images/viewer.png</file>
+        <file>images/viewer.png</file>
         <file>images/pdflatex.png</file>
         <file>images/xelatex.png</file>
         <file>images/lualatex.png</file>
@@ -321,7 +321,7 @@
         <file>images/cutCol.png</file>
         <file>images/pasteCol.png</file>
         <file>images/alignCols.png</file>
-		<file>images/image.png</file>
+        <file>images/image.png</file>
         <file>images/logpanel.png</file>
         <file>images/sidebar.png</file>
         <file>images/config_advancededitor.png</file>
@@ -343,6 +343,9 @@
         <file>images/left.png</file>
         <file>images/right.png</file>
         <file>images/bookmarks.png</file>
+        <file>images/test/arrowleft.png</file>
+        <file>images/test/closebutton.png</file>
+        <file>images/test/Transition.png</file>
     </qresource>
     <qresource prefix="/classic">
         <file>images/classic/filenew.png</file>
@@ -357,8 +360,8 @@
         <file>images/classic/math-accent.png</file>
         <file>images/classic/hi16-action-math10.png</file>
         <file>images/classic/hi16-action-math1.png</file>
-		<file>images/classic/misc-symbols.png</file>
-		<file>images/classic/misc-symbols-wasysym.png</file>
+        <file>images/classic/misc-symbols.png</file>
+        <file>images/classic/misc-symbols-wasysym.png</file>
         <file>images/classic/text_bold.png</file>
         <file>images/classic/text_italic.png</file>
         <file>images/classic/text_under.png</file>
@@ -391,8 +394,8 @@
         <file>images/modern/math-accent.png</file>
         <file>images/modern/hi16-action-math10.png</file>
         <file>images/modern/hi16-action-math1.png</file>
-		<file>images/modern/misc-symbols.png</file>
-		<file>images/modern/misc-symbols-wasysym.png</file>
+        <file>images/modern/misc-symbols.png</file>
+        <file>images/modern/misc-symbols-wasysym.png</file>
         <file>images/modern/text_bold.png</file>
         <file>images/modern/text_italic.png</file>
         <file>images/modern/text_under.png</file>

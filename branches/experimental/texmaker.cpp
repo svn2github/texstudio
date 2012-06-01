@@ -191,7 +191,32 @@ Texmaker::Texmaker(QWidget *parent, Qt::WFlags flags)
 	centralLayout->addWidget(centralToolBar);
 	centralLayout->addWidget(EditorView);
 	
-	setCentralWidget(centralFrame);
+	mainHSplitter = new AnimatedSplitter(this);
+	mainHSplitter->setOrientation(Qt::Horizontal);
+	centralVSplitter = new QSplitter(Qt::Vertical, this);
+
+	outputView = new OutputViewWidget(this);
+	outputView->setObjectName("OutputView");
+
+	centralVSplitter->addWidget(centralFrame);
+	centralVSplitter->addWidget(outputView);
+	centralVSplitter->setStretchFactor(0,2);
+	centralVSplitter->setStretchFactor(1,1);
+
+	leftPanel = new LeftPanel(mainHSplitter);
+//    leftPanel->setWindowTitle(tr("Structure"));
+//    leftPanel->setObjectName("leftPanel");
+//		leftPanel->setAllowedAreas(Qt::AllDockWidgetAreas);
+//		leftPanel->setFeatures(QDockWidget::DockWidgetClosable);
+//		addDockWidget(Qt::LeftDockWidgetArea, leftPanel);
+	mainHSplitter->addWidget(leftPanel);
+	mainHSplitter->addWidget(centralVSplitter);
+	mainHSplitter->setStretchFactor(0,1);
+	mainHSplitter->setStretchFactor(1,3);
+
+	setCentralWidget(mainHSplitter);
+
+
 	
 	setContextMenuPolicy(Qt::ActionsContextMenu);
 	
@@ -372,12 +397,10 @@ void Texmaker::setupDockWidgets(){
 	
 	//Structure panel
 	if (!leftPanel) {
-		leftPanel = new CustomWidgetList(this);
+		leftPanel = new LeftPanel(mainHSplitter);
 		leftPanel->setWindowTitle(tr("Structure"));
 		leftPanel->setObjectName("leftPanel");
-		leftPanel->setAllowedAreas(Qt::AllDockWidgetAreas);
-		leftPanel->setFeatures(QDockWidget::DockWidgetClosable);
-		addDockWidget(Qt::LeftDockWidgetArea, leftPanel);
+		mainHSplitter->addWidget(leftPanel);
 		connect(&configManager,SIGNAL(newLeftPanelLayoutChanged(bool)), leftPanel,  SLOT(showWidgets(bool)));
 		if (hiddenLeftPanelWidgets!="") {
 			leftPanel->setHiddenWidgets(hiddenLeftPanelWidgets);
@@ -385,7 +408,6 @@ void Texmaker::setupDockWidgets(){
 		}
 		
 		connect(leftPanel,SIGNAL(widgetContextMenuRequested(QWidget*, QPoint)),this,SLOT(SymbolGridContextMenu(QWidget*, QPoint)));
-		addAction(leftPanel->toggleViewAction());
 	}
 	
 	if (!structureTreeView) {
@@ -433,8 +455,8 @@ void Texmaker::setupDockWidgets(){
                 item->setData(Qt::UserRole+2,0);
             }
         }
-    } else leftPanel->setWidgetText(bookmarksWidget,tr("Bookmarks"));
-	
+	} else leftPanel->setWidgetText(bookmarksWidget,tr("Bookmarks"));
+
 	addSymbolGrid("operators", "math1.png",tr("Operator symbols"));
 	addSymbolGrid("relation", "hi16-action-math1.png",tr("Relation symbols"));
 	addSymbolGrid("arrows", "math2.png",tr("Arrow symbols"));
@@ -466,11 +488,11 @@ void Texmaker::setupDockWidgets(){
 		outputView = new OutputViewWidget(this);
 		outputView->setObjectName("OutputView");
 		outputView->setWindowTitle(tr("Messages / Log File"));
-		outputView->toggleViewAction()->setText(tr("Messages / Log File"));
-		outputView->setAllowedAreas(Qt::AllDockWidgetAreas);
-		outputView->setFeatures(QDockWidget::DockWidgetClosable);
+//TODO		outputView->toggleViewAction()->setText(tr("Messages / Log File"));
+//TODO		outputView->setAllowedAreas(Qt::AllDockWidgetAreas);
+//TODO		outputView->setFeatures(QDockWidget::DockWidgetClosable);
 		outputView->setTabbedLogView(configManager.tabbedLogView);
-		addDockWidget(Qt::BottomDockWidgetArea,outputView);
+//TODO		addDockWidget(Qt::BottomDockWidgetArea,outputView);
 		connect(outputView,SIGNAL(locationActivated(int,const QString&)),this,SLOT(gotoLocation(int,const QString&)));
 		connect(outputView,SIGNAL(logEntryActivated(int)),this,SLOT(gotoLogEntryEditorOnly(int)));
 		connect(outputView,SIGNAL(tabChanged(int)),this,SLOT(tabChanged(int)));
@@ -488,7 +510,7 @@ void Texmaker::setupDockWidgets(){
 		connect(&buildManager, SIGNAL(commandLineRequested(QString,QString*)), SLOT(commandLineRequested(QString,QString*)));
 		
 		
-		addAction(outputView->toggleViewAction());
+//TODO		addAction(outputView->toggleViewAction());
 		QAction* temp = new QAction(this); temp->setSeparator(true);
 		addAction(temp);
 	}
@@ -855,8 +877,11 @@ void Texmaker::setupMenus() {
 	newManagedMenu(menu, "documents",tr("Open Documents"));
 	
 	menu->addSeparator();
-	newManagedAction(menu, "structureview",leftPanel->toggleViewAction());
-	newManagedAction(menu, "outputview",outputView->toggleViewAction());
+	newManagedAction(menu, "leftpanel", leftPanel->toggleViewAction());
+	leftPanel->toggleViewAction()->setText(tr("Structure"));
+	leftPanel->toggleViewAction()->setIcon(QIcon(":/images/sidebar.png"));
+	bottomPanelViewAction = newManagedAction(menu, "bottompanel", tr("Messages / Log File"), SLOT(toggleBottomPanel()), QKeySequence(), ":/images/logpanel.png");
+	bottomPanelViewAction->setCheckable(true);
 
 	newManagedAction(menu, "closesomething",tr("Close Something"), SLOT(viewCloseSomething()), Qt::Key_Escape);
 	
@@ -1083,7 +1108,7 @@ void Texmaker::createStatusBar() {
 	
 	QAction *act;
 	QToolButton *tb;
-	act = getManagedAction("main/view/structureview");
+	act = getManagedAction("main/view/leftpanel");
 	if (act) {
 		tb = new QToolButton(status);
 		tb->setCheckable(true);
@@ -1095,7 +1120,7 @@ void Texmaker::createStatusBar() {
 		connect(act, SIGNAL(toggled(bool)), tb, SLOT(setChecked(bool)));
 		status->addPermanentWidget(tb, 0);
 	}
-	act = getManagedAction("main/view/outputview");
+	act = getManagedAction("main/view/bottompanel");
 	if (act) {
 		tb = new QToolButton(status);
 		tb->setCheckable(true);
@@ -3710,6 +3735,7 @@ void Texmaker::InsertBibEntry(const QString& id){
 	}
 	foreach (const QString &s, documents.mentionedBibTeXFiles)
 		possibleBibFiles << QFileInfo(s).fileName();
+	qDebug() << usedFile;
 	BibTeXDialog* bd=new BibTeXDialog(0,possibleBibFiles,usedFile,id);
 	if (bd->exec()){
 		usedFile=bd->resultFileId;
@@ -4676,6 +4702,13 @@ void Texmaker::updateOpenDocumentMenu(bool localChange){
 		sl << (ed->fileName().isEmpty() ? tr("untitled") : ed->name().replace("&", "&&"));
 	}
 	configManager.updateListMenu("main/view/documents", sl, "doc", false, SLOT(gotoOpenDocument()), 0, false, 0);
+}
+
+void Texmaker::toggleBottomPanel(){
+	bool vis=outputView->isVisible();
+	outputView->setVisible(!vis);
+// TODO may be left out:
+	bottomPanelViewAction->setChecked(!vis);
 }
 
 void Texmaker::viewCloseSomething(){

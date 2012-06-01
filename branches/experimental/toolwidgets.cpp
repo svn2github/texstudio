@@ -3,8 +3,6 @@
 #include "smallUsefulFunctions.h"
 #include "qdocument.h"
 
-Q_DECLARE_METATYPE(QAction*)
-
 void adjustScrollBar(QScrollBar *scrollBar, double factor)
 {
 	scrollBar->setValue(int(factor * scrollBar->value()
@@ -120,8 +118,7 @@ const int LAYOUT_PAGE_ERRORS=2;
 const int LAYOUT_PAGE_PREVIEW=3;
 const int LAYOUT_PAGE_SEARCH=4;
 	
-OutputViewWidget::OutputViewWidget(QWidget * parent): QDockWidget(parent), logModel(0), logpresent(false), tabbedLogView(false){
-	toggleViewAction()->setIcon(QIcon(":/images/logpanel.png"));
+OutputViewWidget::OutputViewWidget(QWidget * parent): QFrame(parent), logModel(0), logpresent(false), tabbedLogView(false){
 
 	logModel = new LatexLogModel(this);//needs loaded line marks
 	searchResultModel = new SearchResultModel(this);
@@ -182,29 +179,29 @@ OutputViewWidget::OutputViewWidget(QWidget * parent): QDockWidget(parent), logMo
 	OutputLogTextEdit->setReadOnly(true);
 	connect(OutputLogTextEdit, SIGNAL(clickOnLogLine(int)),this,SLOT(gotoLogLine(int)));
 
-	OutputLayout= new QStackedWidget(this);
+	OutputStackWidget= new QStackedWidget(this);
 
 	QVBoxLayout* OutputVLayout= new QVBoxLayout(); //contains the widgets for the normal mode (OutputTable + OutputLogTextEdit)
 	OutputVLayout->setSpacing(0);
 	OutputVLayout->setMargin(0);
 
 	// add widget to log view
-	OutputLayout->addWidget(OutputTextEdit);
+	OutputStackWidget->addWidget(OutputTextEdit);
 
 	OutputVLayout->addWidget(OutputTable);
 	OutputVLayout->addWidget(OutputLogTextEdit);
 	QWidget* tempWidget=new QWidget (this);
 	tempWidget->setLayout(OutputVLayout);
-	OutputLayout->addWidget(tempWidget);
+	OutputStackWidget->addWidget(tempWidget);
 
-	OutputLayout->addWidget(OutputTable2);
+	OutputStackWidget->addWidget(OutputTable2);
 
 	// previewer
 	previewWidget = new PreviewWidget(this);
-	OutputLayout->addWidget(previewWidget);
+	OutputStackWidget->addWidget(previewWidget);
 
 	// global search results
-	OutputLayout->addWidget(OutputTree);
+	OutputStackWidget->addWidget(OutputTree);
 
 	// order for tabbar
 	logViewerTabBar=new QTabBar(this);
@@ -216,10 +213,15 @@ OutputViewWidget::OutputViewWidget(QWidget * parent): QDockWidget(parent), logMo
 	retranslateUi();
 	logViewerTabBar->hide(); //internal default is non tabbed mode
 
-	this->setWidget(OutputLayout);
+	QVBoxLayout *vLayout = new QVBoxLayout(this);
+	vLayout->setSpacing(0);
+	vLayout->setMargin(0);
+	vLayout->addWidget(logViewerTabBar);
+	vLayout->addWidget(OutputStackWidget);
+	setLayout(vLayout);
 
 	connect(logViewerTabBar, SIGNAL(currentChanged(int)),
-	        OutputLayout, SLOT(setCurrentIndex(int)));
+			OutputStackWidget, SLOT(setCurrentIndex(int)));
 
 	connect(logViewerTabBar, SIGNAL(currentChanged(int)),
 	        this, SIGNAL(tabChanged(int)));
@@ -228,10 +230,12 @@ OutputViewWidget::OutputViewWidget(QWidget * parent): QDockWidget(parent), logMo
 void OutputViewWidget::setTabbedLogView(bool tabbed){
 	tabbedLogView=tabbed;
 	if (tabbed) {
-		this->setTitleBarWidget(logViewerTabBar);
+// TODO
+//		this->setTitleBarWidget(logViewerTabBar);
 		OutputTable->hide();
 	} else {
-		this->setTitleBarWidget(0);
+// TODO
+//		this->setTitleBarWidget(0);
 		OutputTable->show();
 	}
 }
@@ -328,7 +332,7 @@ void OutputViewWidget::insertMessageLine(const QString &message){
 	OutputTextEdit->insertLine(message);
 }
 void OutputViewWidget::copy(){
-	if (tabbedLogView && OutputLayout->currentIndex() == LAYOUT_PAGE_ERRORS)
+	if (tabbedLogView && OutputStackWidget->currentIndex() == LAYOUT_PAGE_ERRORS)
 		copyMessage();
 	else
 		OutputLogTextEdit->copy();
@@ -356,13 +360,13 @@ void OutputViewWidget::selectLogEntry(int logEntryNumber, bool makeVisible){
 }
 void OutputViewWidget::showLogOrErrorList(bool noTabChange){
 	if (!isVisible()) show();
-	if (OutputLayout->currentIndex()!=LAYOUT_PAGE_LOG && OutputLayout->currentIndex()!=LAYOUT_PAGE_ERRORS &&!noTabChange)
+	if (OutputStackWidget->currentIndex()!=LAYOUT_PAGE_LOG && OutputStackWidget->currentIndex()!=LAYOUT_PAGE_ERRORS &&!noTabChange)
 		logViewerTabBar->setCurrentIndex(LAYOUT_PAGE_LOG);
 }
 void OutputViewWidget::showErrorListOrLog(){
 	if (!isVisible()) show();
 	if (tabbedLogView) {
-		if (OutputLayout->currentIndex()!=LAYOUT_PAGE_LOG) 
+		if (OutputStackWidget->currentIndex()!=LAYOUT_PAGE_LOG)
 			logViewerTabBar->setCurrentIndex(LAYOUT_PAGE_ERRORS);
 	} else logViewerTabBar->setCurrentIndex(LAYOUT_PAGE_LOG);
 }
@@ -510,193 +514,3 @@ QSize SearchTreeDelegate::sizeHint(const QStyleOptionViewItem &option,
        return QSize(rect.width(), rect.height());
 }
 
-//====================================================================
-// CustomWidgetList (for left panel)
-//====================================================================
-CustomWidgetList::CustomWidgetList(QWidget* p): 
-	QDockWidget(p), toolbox(0), frame(0),stack(0), toolbar(0)
-{
-	toggleViewAction()->setIcon(QIcon(":/images/sidebar.png"));
-	setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(this,SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customContextMenuRequested(QPoint)));
-}
-void CustomWidgetList::addWidget(QWidget* widget, const QString& id, const QString& text, const QString& iconName){
-	widgets << widget;
-	widget->setProperty("id",id);
-	widget->setProperty("Name",text);
-	widget->setProperty("iconName",iconName);
-	widget->setProperty("StructPos",widgets.size());
-
-	QAction *Act = new QAction(text, this);
-	Act->setCheckable(true);
-	Act->setChecked(!hiddenWidgetsIds.contains(id));
-	Act->setData(id);
-	connect(Act, SIGNAL(toggled(bool)), this, SLOT(toggleWidgetFromAction(bool)));
-	addAction(Act);
-}
-void CustomWidgetList::setWidgetText(const QString& id, const QString& text){
-	setWidgetText(widget(id),text);
-}
-void CustomWidgetList::setWidgetText(QWidget* widget, const QString& text){
-	int pos=widgets.indexOf(widget);
-	if (pos<0) return;
-	widget->setProperty("Name",text);
-	if (newStyle) actions()[pos]->setToolTip(text);
-	else toolbox->setItemText(pos,text);
-}
-void CustomWidgetList::setWidgetIcon(const QString& id, const QString& icon){
-	setWidgetIcon(widget(id), icon);
-}
-
-void CustomWidgetList::setWidgetIcon(QWidget* widget, const QString& icon){
-	int pos=widgets.indexOf(widget);
-	if (pos<0) return;
-	widget->setProperty("iconName",icon);
-}
-
-void CustomWidgetList::showPageFromAction(){
-	QAction* act=qobject_cast<QAction*>(sender());
-	if (!act) return;
-	QWidget* wid=widget(act->data().toString());
-	stack->setCurrentWidget(wid);
-	setWindowTitle(act->toolTip());
-	foreach (QAction* a, toolbar->actions())
-		a->setChecked(a==act);
-}
-void CustomWidgetList::currentWidgetChanged(int i){
-	Q_ASSERT(newStyle==false);
-	setWindowTitle(toolbox->itemText(i));
-}
-void CustomWidgetList::toggleWidgetFromAction(bool on){
-	QAction* act=qobject_cast<QAction*>(sender());
-	if (!act || act->data().toString()=="") return;
-	if (on) 
-		hiddenWidgetsIds.removeAll(act->data().toString());
-	else if (!hiddenWidgetsIds.contains(act->data().toString())) 
-		hiddenWidgetsIds.append(act->data().toString());
-	showWidgets(newStyle);
-}
-void CustomWidgetList::customContextMenuRequested(const QPoint& localPosition){
-	QWidget *widget=currentWidget();
-	if(widget && widget->underMouse()) //todo?: use a more reliable function than underMouse (see qt bug 260000)
-		emit widgetContextMenuRequested(widget, mapToGlobal(localPosition));
-	else{
-		QMenu menu;
-		menu.addActions(actions());
-		menu.exec(mapToGlobal(localPosition));
-	}
-}
-void CustomWidgetList::showWidgets(bool newLayoutStyle){
-	if (toolbox) {
-		for (int i=0;i<widgets.count();i++){
-			toolbox->removeItem(toolbox->indexOf(widgets[i]));
-			widgets[i]->setParent(this);//otherwise it will be deleted
-		}
-		delete toolbox;
-	}
-	if (stack) {
-		for (int i=0;i<widgets.count();i++){
-			stack->removeWidget(widgets[i]);
-			widgets[i]->setParent(this);//otherwise it will be deleted
-		}
-		delete stack;
-	}
-	if (toolbar) delete toolbar;
-	if (frame) delete frame; 
-	newStyle=newLayoutStyle;
-	if (newLayoutStyle) {
-		toolbox=0;
-		frame=new QFrame(this);
-		frame->setLineWidth(0);
-		frame->setFrameShape(QFrame::Box);
-		frame->setFrameShadow(QFrame::Plain);
-
-		toolbar=new QToolBar("LogToolBar",this);
-		toolbar->setFloatable(false);
-		toolbar->setOrientation(Qt::Vertical);
-		toolbar->setMovable(false);
-		toolbar->setIconSize(QSize(16,16 ));
-
-		stack=new QStackedWidget(this);
-
-		for (int i=0;i<widgets.size();i++)
-			if (!hiddenWidgetsIds.contains(widgetId(widgets[i]))) {
-				stack->addWidget(widgets[i]);
-				QAction* act=toolbar->addAction(QIcon(widgets[i]->property("iconName").toString()),widgets[i]->property("Name").toString());
-				act->setCheckable(true);
-				if (i==0) act->setChecked(true);
-				act->setData(widgetId(widgets[i]));
-				connect(act,SIGNAL(triggered()),this,SLOT(showPageFromAction()));
-				widgets[i]->setProperty("associatedAction", QVariant::fromValue<QAction*>(act));
-			} else widgets[i]->hide();
-		
-		QHBoxLayout* hlayout= new QHBoxLayout(frame);
-		hlayout->setSpacing(0);
-		hlayout->setMargin(0);
-		hlayout->addWidget(toolbar);
-		hlayout->addWidget(stack);
-			
-		setWidget(frame);
-	} else {
-		frame=0;
-		toolbar=0;
-		stack=0;
-		toolbox = new QToolBox(this);
-		for (int i=0;i<widgets.size();i++)
-			if (!hiddenWidgetsIds.contains(widgetId(widgets[i]))) {
-				toolbox->addItem(widgets[i],QIcon(widgets[i]->property("iconName").toString()),widgets[i]->property("Name").toString());
-			} else widgets[i]->hide();
-		connect(toolbox,SIGNAL(currentChanged(int)),SLOT(currentWidgetChanged(int)));
-		setWidget(toolbox);
-
-	}
-	if (!widgets.empty()) //name after active (first) widget
-		setWindowTitle(widgets.first()->property("Name").toString());
-}
-int CustomWidgetList::widgetCount() const{
-	return widgets.count();
-}
-void CustomWidgetList::setHiddenWidgets(const QString& hidden){
-	hiddenWidgetsIds=hidden.split("|");
-}
-QString CustomWidgetList::hiddenWidgets() const{
-	return hiddenWidgetsIds.join("|");
-}
-
-/*'void CustomWidgetList::addWidgetOld(QWidget* widget, const QString& text, const QIcon& icon){
-}
-void CustomWidgetList::addWidgetNew(QWidget* widget, const QString& text, const QIcon& icon){
-	stack->addWidget(*list);
-	toolbar->addAction(icon,text);
-}*/
-
-QWidget* CustomWidgetList::widget(int i) const{
-	return widgets[i];
-}
-QWidget* CustomWidgetList::widget(const QString& id) const{
-	for (int i=0;i<widgets.size();i++)
-		if (widgetId(widgets[i])==id) 
-			return widgets[i];
-	return 0;
-}
-void CustomWidgetList::setCurrentWidget(QWidget* widget){
-	if (newStyle) {
-		stack->setCurrentWidget(widget);
-		QAction* act = widget->property("associatedAction").value<QAction*>();
-		foreach (QAction* a, toolbar->actions())
-			a->setChecked(a==act);
-	} else {
-		toolbox->setCurrentWidget(widget);
-	}
-}
-QWidget* CustomWidgetList::currentWidget() const{
-	if (newStyle) return stack->currentWidget();
-	else return toolbox->currentWidget();
-}
-bool CustomWidgetList::isNewLayoutStyleEnabled() const{
-	return newStyle;
-}
-QString CustomWidgetList::widgetId(QWidget* widget) const{
-	if (!widget) return "";
-	return widget->property("id").toString();
-}

@@ -31,6 +31,7 @@
 #include "spellerdialog.h"
 #include "textanalysis.h"
 #include "toolwidgets.h"
+#include "leftpanel.h"
 #include "txstabwidget.h"
 #include "unicodeinsertion.h"
 #include "tablemanipulation.h"
@@ -41,6 +42,7 @@
 #include "qlinemarksinfocenter.h"
 #include "latexstyleparser.h"
 #include "diffoperations.h"
+#include "animatedsplitter.h"
 
 typedef QHash<QString,int> SymbolList;
 
@@ -113,9 +115,12 @@ private:
 	QPointer<UnicodeInsertion> unicodeInsertionDialog;
 	
 	//gui
+	AnimatedSplitter *mainHSplitter;
+	QSplitter *centralVSplitter;
+
 	TxsTabWidget *EditorView;
 	QToolBar* centralToolBar;
-	CustomWidgetList *leftPanel;
+	LeftPanel *leftPanel;
 	SymbolGridWidget *MostUsedSymbolWidget, *FavoriteSymbolWidget;
 	QString hiddenLeftPanelWidgets;
 	
@@ -177,7 +182,8 @@ private:
 	LatexEditorView* getEditorViewFromFileName(const QString &fileName, bool checkTemporaryNames = false);
 	
 	QAction *fullscreenModeAction;
-	
+	QAction *bottomPanelViewAction;
+
 	void updateUserToolMenu();
 	void linkToEditorSlot(QAction* act, const char* slot, const QList<QVariant>& args);
 private slots:
@@ -395,6 +401,8 @@ protected slots:
 	void gotoOpenDocument();
 	void updateOpenDocumentMenu(bool localChange=false);
 	
+	void toggleBottomPanel();
+
 	void viewCloseSomething();
 	void setFullScreenMode();
 	void viewAlignWindows();

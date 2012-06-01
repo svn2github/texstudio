@@ -74,7 +74,7 @@ QColor StyleHelper::panelTextColor()
     return Qt::white;
 }
 
-QColor StyleHelper::m_baseColor(0x556676);
+QColor StyleHelper::m_baseColor(0x606060);
 
 QColor StyleHelper::baseColor()
 {

@@ -116,6 +116,8 @@ HEADERS += texmaker.h \
     grammarcheck_config.h \
     bibtexreader.h \
     cleandialog.h \
+    animatedsplitter.h \
+    leftpanel.h \
     qmetautils.h
 SOURCES += main.cpp \
     buildmanager.cpp \
@@ -199,6 +201,8 @@ SOURCES += main.cpp \
     grammarcheck.cpp \
     bibtexreader.cpp \
     cleandialog.cpp \
+    animatedsplitter.cpp \
+    leftpanel.cpp \
     qmetautils.cpp
 RESOURCES += texstudio.qrc \
     symbols.qrc
