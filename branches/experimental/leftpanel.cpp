@@ -2,8 +2,9 @@
 
 Q_DECLARE_METATYPE(QAction*)
 
+
 LeftPanel::LeftPanel(QWidget *parent) :
-	AutoCollapsingPanel(parent), vLayout(0), topbar(0), contentsArea(0), toolbox(0), stack(0), sidebar(0)
+	AutoCollapsingPanel(parent), vLayout(0), topbar(0), collapsedTopbar(0), contentsArea(0), toolbox(0), stack(0), sidebar(0), cbTopbarSelector(0)
 {
 	topbar = new QToolBar("LeftPanelTopBar", this);
 	topbar->setOrientation(Qt::Horizontal);
@@ -11,31 +12,47 @@ LeftPanel::LeftPanel(QWidget *parent) :
 	topbar->setMovable(false);
 	topbar->setIconSize(QSize(16,16));
 	topbar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-// TODO	topbar->setContentsMargins(50, 0, 0, 0);
 
-	QLabel *title = new QLabel("Test");
-	title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	topbar->addWidget(title);
+	// TODO: the combobox in the the top bar prevents shrinking to 23px. Didn't manage to
+	// get it shrunken properly (is at least 37px), even when hiding (use QAction::setVisible
+	// see documentation of QToolBar::addWidget)
+	// Workaround: exchange the topbar when collapsing
+	collapsedTopbar = new QToolBar(this);
+	collapsedTopbar->setOrientation(Qt::Horizontal);
+	collapsedTopbar->setFloatable(false);
+	collapsedTopbar->setMovable(false);
+	collapsedTopbar->setIconSize(QSize(16,16));
+	collapsedTopbar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+	collapsedTopbar->setVisible(false);
 
-	QToolButton *tb = new QToolButton(this);
-	tb->setIcon(QIcon(":/images/test/Transition.png"));
-	tb->setToolTip(tr("Animated Motion: Temporary button for toggling animation -> testing"));
-	tb->setCheckable(true);
-	topbar->addWidget(tb);
-	connect(tb, SIGNAL(toggled(bool)), this, SLOT(setAnimatedMotion(bool)));
+	QAction *act = new QAction(this);
+	act->setIcon(QIcon(":/images/test/arrowleft.png"));
+	act->setToolTip(tr("Auto Collapse"));
+	act->setCheckable(true);
+	topbar->addAction(act);
+	collapsedTopbar->addAction(act);
+	connect(act, SIGNAL(toggled(bool)), this, SLOT(setCollapsingEnabled(bool)));
 
-	tb = new QToolButton(this);
-	tb->setIcon(QIcon(":/images/test/arrowleft.png"));
-	tb->setToolTip(tr("Auto Collapse"));
-	tb->setCheckable(true);
-	topbar->addWidget(tb);
-	connect(tb, SIGNAL(toggled(bool)), this, SLOT(setCollapsingEnabled(bool)));
+	cbTopbarSelector = new QComboBox();
+	cbTopbarSelector->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	cbTopbarSelector->setMinimumWidth(0);
+	cbTopbarSelector->setMaxVisibleItems(25);
+	topbar->addWidget(cbTopbarSelector);
+	connect(cbTopbarSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(showPageFromComboBox(int)));
+	connect(this, SIGNAL(collapseStateChanged(CollapseState)), SLOT(updateToolbarForResizing(CollapseState)));
 
-	tb = new QToolButton(this);
-	tb->setIcon(QIcon(":/images/test/closebutton.png"));
-	tb->setToolTip(tr("Close"));
-	topbar->addWidget(tb);
-	connect(tb, SIGNAL(clicked()), this, SLOT(hide()));
+	act = new QAction(this);
+	act->setIcon(QIcon(":/images/test/Transition.png"));
+	act->setToolTip(tr("Animated Motion: Temporary button for toggling animation\nMove to config or context menu of collapse button"));
+	act->setCheckable(true);
+	topbar->addAction(act);
+	connect(act, SIGNAL(toggled(bool)), this, SLOT(setAnimatedMotion(bool)));
+
+	act = new QAction(this);
+	act->setIcon(QIcon(":/images/test/closebutton.png"));
+	act->setToolTip(tr("Close"));
+	topbar->addAction(act);
+	connect(act, SIGNAL(clicked()), this, SLOT(hide()));
 
 	contentsArea = new QWidget();
 	contentsArea->setContentsMargins(0,0,0,0);
@@ -63,7 +80,7 @@ void LeftPanel::addWidget(QWidget* widget, const QString& id, const QString& tex
 	Act->setCheckable(true);
 	Act->setChecked(!hiddenWidgetsIds.contains(id));
 	Act->setData(id);
-	connect(Act, SIGNAL(toggled(bool)), this, SLOT(toggleWidgetFromAction(bool)));
+	connect(Act, SIGNAL(toggled(bool)), this, SLOT(toggleWidgetVisibleFromAction(bool)));
 	addAction(Act);
 }
 void LeftPanel::setWidgetText(const QString& id, const QString& text){
@@ -86,20 +103,31 @@ void LeftPanel::setWidgetIcon(QWidget* widget, const QString& icon){
 	widget->setProperty("iconName",icon);
 }
 
+void LeftPanel::showPageFromComboBox(int index){
+	showPage(cbTopbarSelector->itemData(index).toString());
+}
+
 void LeftPanel::showPageFromAction(){
 	QAction* act=qobject_cast<QAction*>(sender());
 	if (!act) return;
-	QWidget* wid=widget(act->data().toString());
-	stack->setCurrentWidget(wid);
-	setWindowTitle(act->toolTip());
-	foreach (QAction* a, sidebar->actions())
-		a->setChecked(a==act);
+	showPage(act->data().toString());
 }
+
+void LeftPanel::showPage(const QString &id){
+	QWidget* wid=widget(id);
+	stack->setCurrentWidget(wid);
+	foreach (QAction* a, sidebar->actions())
+		a->setChecked(a->data().toString()==id);
+	int index = cbTopbarSelector->findData(id);
+	if (index >= 0)
+		cbTopbarSelector->setCurrentIndex(index);
+}
+
 void LeftPanel::currentWidgetChanged(int i){
 	Q_ASSERT(newStyle==false);
 	setWindowTitle(toolbox->itemText(i));
 }
-void LeftPanel::toggleWidgetFromAction(bool on){
+void LeftPanel::toggleWidgetVisibleFromAction(bool on){
 	QAction* act=qobject_cast<QAction*>(sender());
 	if (!act || act->data().toString()=="") return;
 	if (on)
@@ -108,6 +136,21 @@ void LeftPanel::toggleWidgetFromAction(bool on){
 		hiddenWidgetsIds.append(act->data().toString());
 	showWidgets(newStyle);
 }
+
+void LeftPanel::updateToolbarForResizing(CollapseState clState) {
+	if (clState == Collapsing) {
+		vLayout->removeWidget(topbar);
+		topbar->hide();
+		vLayout->insertWidget(0, collapsedTopbar);
+		collapsedTopbar->show();
+	} else if (clState == Expanded) {
+		vLayout->removeWidget(collapsedTopbar);
+		collapsedTopbar->hide();
+		vLayout->insertWidget(0, topbar);
+		topbar->show();
+	}
+}
+
 void LeftPanel::customContextMenuRequested(const QPoint& localPosition){
 	QWidget *widget=currentWidget();
 	if(widget && widget->underMouse()) //todo?: use a more reliable function than underMouse (see qt bug 260000)
@@ -118,6 +161,7 @@ void LeftPanel::customContextMenuRequested(const QPoint& localPosition){
 		menu.exec(mapToGlobal(localPosition));
 	}
 }
+
 void LeftPanel::showWidgets(bool newLayoutStyle){
 	if (toolbox) {
 		for (int i=0;i<widgets.count();i++){
@@ -147,6 +191,8 @@ void LeftPanel::showWidgets(bool newLayoutStyle){
 		sidebar->setMovable(false);
 		sidebar->setIconSize(QSize(16,16));
 
+		cbTopbarSelector->clear();
+
 		stack=new QStackedWidget(this);
 
 		for (int i=0;i<widgets.size();i++)
@@ -155,6 +201,7 @@ void LeftPanel::showWidgets(bool newLayoutStyle){
 				widgets[i]->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Expanding);
 				widgets[i]->setMinimumWidth(0);
 				QAction* act=sidebar->addAction(QIcon(widgets[i]->property("iconName").toString()),widgets[i]->property("Name").toString());
+				cbTopbarSelector->addItem(widgets[i]->property("Name").toString(), widgets[i]->property("id"));
 				act->setCheckable(true);
 				if (i==0) act->setChecked(true);
 				act->setData(widgetId(widgets[i]));
@@ -183,6 +230,7 @@ void LeftPanel::showWidgets(bool newLayoutStyle){
 	if (!widgets.empty()) //name after active (first) widget
 		setWindowTitle(widgets.first()->property("Name").toString());
 }
+
 int LeftPanel::widgetCount() const{
 	return widgets.count();
 }

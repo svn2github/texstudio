@@ -73,6 +73,8 @@ public:
 			break;
 		}
 	}
+signals:
+	void collapseStateChanged(CollapseState clState);
 public slots:
 	void setAnimatedMotion(bool enabled) { mAnimatedMotion = enabled; }
 	void setCollapsingEnabled(bool enabled) {if (!enabled) setCollapsed(false); mCollapsingEnabled = enabled;}
@@ -90,38 +92,48 @@ protected:
 		QFrame::resizeEvent(event);
 		if (clState == Collapsed && width() > collapsedWidth()) {
 			clState = Expanded;
-			qDebug() << clState;
+			qDebug() << "resize-event : state" << clState;
 		}
 	}
 private slots:
-	void sizingFinished() { clState = (clState==Expanding) ? Expanded : Collapsed; }
+	void sizingFinished() { clState = (clState==Expanding) ? Expanded : Collapsed; emit collapseStateChanged(clState);}
 private:
 	void triggerResize(CollapseState state) {
 		if (!containingSplitter) return;
 		containingSplitter->setActiveWidget(this);
 
 		if (!mAnimatedMotion) {
-			if (state == Collapsing) state = Collapsed;
-			if (state == Expanding) state = Expanded;
+			if (state == Collapsing) {
+				emit collapseStateChanged(state);
+				state = Collapsed;
+			}
+			if (state == Expanding) {
+				state = Expanded;
+				emit collapseStateChanged(state);
+			}
 		}
 
-		qDebug() << state << expandedWidth << width();
+		qDebug() << "resize-trigg : state" << state << ", exWidth, width:"<< expandedWidth << width();
 
 		switch (state) {
 		case Expanded:
 			containingSplitter->setActiveWidgetWidth(expandedWidth);
-			clState = Expanded;
+			clState = state;
+			emit collapseStateChanged(state);
 			break;
 		case Collapsed:
 			containingSplitter->setActiveWidgetWidth(collapsedWidth());
-			clState = Collapsed;
+			clState = state;
+			emit collapseStateChanged(state);
 			break;
 		case Expanding:
-			clState = Expanding;
+			clState = state;
+			emit collapseStateChanged(state);
 			containingSplitter->animateActiveWidgetWidth(expandedWidth);
 			break;
 		case Collapsing:
-			clState = Collapsing;
+			clState = state;
+			emit collapseStateChanged(state);
 			containingSplitter->animateActiveWidgetWidth(collapsedWidth());
 			break;
 		}

@@ -29,12 +29,15 @@ signals:
 public slots:
 	void showWidgets(bool newLayoutStyle);
 private slots:
+	void showPageFromComboBox(int index);
 	void showPageFromAction();
+	void showPage(const QString &id);
 	void currentWidgetChanged(int i);
-	void toggleWidgetFromAction(bool on);
+	void toggleWidgetVisibleFromAction(bool on);
+	void updateToolbarForResizing(CollapseState clState);
 	void customContextMenuRequested(const QPoint& localPosition);
 protected:
-	virtual int collapsedWidth() {qDebug()<<23; return 23;}
+	virtual int collapsedWidth() {return 23;}
 private:
 	void showWidget(const QString& id);
 	void hideWidget(const QString& id);
@@ -47,7 +50,7 @@ private:
 	bool newStyle;
 
 	QVBoxLayout *vLayout; // containing title bar and contents
-	QToolBar *topbar;
+	QToolBar *topbar, *collapsedTopbar;
 	QWidget *contentsArea;
 
 	//old layout
@@ -56,6 +59,7 @@ private:
 	//new layout
 	QStackedWidget* stack;
 	QToolBar *sidebar;
+	QComboBox *cbTopbarSelector;
 };
 
 

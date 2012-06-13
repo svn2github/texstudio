@@ -74,7 +74,7 @@ QColor StyleHelper::panelTextColor()
     return Qt::white;
 }
 
-QColor StyleHelper::m_baseColor(0x606060);
+QColor StyleHelper::m_baseColor(0x666666);
 
 QColor StyleHelper::baseColor()
 {
@@ -186,18 +186,18 @@ void StyleHelper::horizontalGradient(QPainter *painter, const QRect &spanRect, c
     QLinearGradient grad(rect.topLeft(), rect.bottomLeft());
 
     grad.setColorAt(0, highlightColor().lighter(120));
-    grad.setColorAt(0.5, highlightColor());
-    grad.setColorAt(0.501, base);
+	grad.setColorAt(0.2, highlightColor());
+	grad.setColorAt(0.301, base);
     grad.setColorAt(1, shadowColor());
     p->fillRect(rect, grad);
 
-/*    QLinearGradient shadowGradient(spanRect.topLeft(), spanRect.topRight());
+	QLinearGradient shadowGradient(spanRect.topLeft(), spanRect.topRight());
     shadowGradient.setColorAt(0, QColor(0, 0, 0, 30));
     QColor highlight = highlightColor().lighter(130);
     highlight.setAlpha(100);
     shadowGradient.setColorAt(0.7, highlight);
     shadowGradient.setColorAt(1, QColor(0, 0, 0, 40));
-    p->fillRect(rect, shadowGradient);*/
+	p->fillRect(rect, shadowGradient);
 
     if (StyleHelper::usePixmapCache() && !QPixmapCache::find(key, pixmap)) {
         painter->drawPixmap(clipRect.topLeft(), pixmap);

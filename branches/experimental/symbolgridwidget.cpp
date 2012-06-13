@@ -132,7 +132,7 @@ void SymbolGridWidget::resizeEvent ( QResizeEvent * event )
 	}
 	// add items with adapted number of columns
 	numberOfColumns=event->size().width()/36;
-	//	qDebug("1.5");
+	if (numberOfColumns<1) numberOfColumns = 1;
 	setColumnCount(numberOfColumns);
 	setRowCount(countOfItems/numberOfColumns+1);
 	for(int j = 0; j < countOfItems/numberOfColumns+1; ++j) setRowHeight(j,36);

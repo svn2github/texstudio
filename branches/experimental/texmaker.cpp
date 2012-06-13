@@ -210,6 +210,7 @@ Texmaker::Texmaker(QWidget *parent, Qt::WFlags flags)
 //		leftPanel->setFeatures(QDockWidget::DockWidgetClosable);
 //		addDockWidget(Qt::LeftDockWidgetArea, leftPanel);
 	mainHSplitter->addWidget(leftPanel);
+	mainHSplitter->setCollapsible(0, false);
 	mainHSplitter->addWidget(centralVSplitter);
 	mainHSplitter->setStretchFactor(0,1);
 	mainHSplitter->setStretchFactor(1,3);

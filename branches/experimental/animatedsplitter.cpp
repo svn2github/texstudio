@@ -10,8 +10,26 @@ AnimatedSplitter::AnimatedSplitter(QWidget *parent) :
 void AnimatedSplitter::setActiveWidgetWidth(int width)
 {
 	if (mActiveIndex >=0 && mActiveIndex < count()) {
+		qDebug() << "w" << width;
+		// We have to explicitly redistribute the sizes, otherwise
+		// any additional/missing space is distributed amongst the widgets
+		// according to the relative weight of the sizes. see. setSizes() documentation
 		QList<int> sz(sizes());
-		sz.replace(mActiveIndex, width);
+		int delta = width - sz.at(mActiveIndex);  // < 0 for shrinking
+		if (mActiveIndex < count()-1 && sz.at(mActiveIndex+1) > delta) {
+			// take place from right
+			sz.replace(mActiveIndex, width);
+			sz.replace(mActiveIndex+1, sz.at(mActiveIndex+1) - delta);
+		} else if (mActiveIndex > 0 && sz.at(mActiveIndex-1) > delta) {
+			// take place from left
+			sz.replace(mActiveIndex, width);
+			sz.replace(mActiveIndex-1, sz.at(mActiveIndex-1) - delta);
+		} else {
+			// fallback:
+			// TODO: the widget likely will not have the final width "width", because of space redistribution
+			sz.replace(mActiveIndex, width);
+			qDebug() << "AnimatedSplitter fallback: no cannot take space from adjacent widgets";
+		}
 		setSizes(sz);
 	}
 }
