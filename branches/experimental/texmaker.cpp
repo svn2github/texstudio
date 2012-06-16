@@ -195,20 +195,11 @@ Texmaker::Texmaker(QWidget *parent, Qt::WFlags flags)
 	mainHSplitter->setOrientation(Qt::Horizontal);
 	centralVSplitter = new QSplitter(Qt::Vertical, this);
 
-	outputView = new OutputViewWidget(this);
-	outputView->setObjectName("OutputView");
-
 	centralVSplitter->addWidget(centralFrame);
-	centralVSplitter->addWidget(outputView);
 	centralVSplitter->setStretchFactor(0,2);
-	centralVSplitter->setStretchFactor(1,1);
 
 	leftPanel = new LeftPanel(mainHSplitter);
-//    leftPanel->setWindowTitle(tr("Structure"));
-//    leftPanel->setObjectName("leftPanel");
-//		leftPanel->setAllowedAreas(Qt::AllDockWidgetAreas);
-//		leftPanel->setFeatures(QDockWidget::DockWidgetClosable);
-//		addDockWidget(Qt::LeftDockWidgetArea, leftPanel);
+	leftPanel->setObjectName("leftPanel");
 	mainHSplitter->addWidget(leftPanel);
 	mainHSplitter->setCollapsible(0, false);
 	mainHSplitter->addWidget(centralVSplitter);
@@ -398,8 +389,8 @@ void Texmaker::setupDockWidgets(){
 	
 	//Structure panel
 	if (!leftPanel) {
+		// TODO duplicate
 		leftPanel = new LeftPanel(mainHSplitter);
-		leftPanel->setWindowTitle(tr("Structure"));
 		leftPanel->setObjectName("leftPanel");
 		mainHSplitter->addWidget(leftPanel);
 		connect(&configManager,SIGNAL(newLeftPanelLayoutChanged(bool)), leftPanel,  SLOT(showWidgets(bool)));
@@ -488,15 +479,13 @@ void Texmaker::setupDockWidgets(){
 	if (!outputView) {
 		outputView = new OutputViewWidget(this);
 		outputView->setObjectName("OutputView");
-		outputView->setWindowTitle(tr("Messages / Log File"));
-//TODO		outputView->toggleViewAction()->setText(tr("Messages / Log File"));
-//TODO		outputView->setAllowedAreas(Qt::AllDockWidgetAreas);
-//TODO		outputView->setFeatures(QDockWidget::DockWidgetClosable);
+		centralVSplitter->addWidget(outputView);
+		centralVSplitter->setStretchFactor(1,1);
+
 		outputView->setTabbedLogView(configManager.tabbedLogView);
-//TODO		addDockWidget(Qt::BottomDockWidgetArea,outputView);
 		connect(outputView,SIGNAL(locationActivated(int,const QString&)),this,SLOT(gotoLocation(int,const QString&)));
 		connect(outputView,SIGNAL(logEntryActivated(int)),this,SLOT(gotoLogEntryEditorOnly(int)));
-		connect(outputView,SIGNAL(tabChanged(int)),this,SLOT(tabChanged(int)));
+		connect(outputView,SIGNAL(pageChanged(QString)),this,SLOT(outputPageChanged(QString)));
 		connect(outputView,SIGNAL(jumpToSearch(QDocument*,int)),this,SLOT(jumpToSearch(QDocument*,int)));
 		connect(&configManager,SIGNAL(tabbedLogViewChanged(bool)),outputView,SLOT(setTabbedLogView(bool)));
 		connect(&buildManager,SIGNAL(previewAvailable(const QString&, const PreviewSource&)),this,SLOT(previewAvailable	(const QString&,const PreviewSource&)));
@@ -881,8 +870,9 @@ void Texmaker::setupMenus() {
 	newManagedAction(menu, "leftpanel", leftPanel->toggleViewAction());
 	leftPanel->toggleViewAction()->setText(tr("Structure"));
 	leftPanel->toggleViewAction()->setIcon(QIcon(":/images/sidebar.png"));
-	bottomPanelViewAction = newManagedAction(menu, "bottompanel", tr("Messages / Log File"), SLOT(toggleBottomPanel()), QKeySequence(), ":/images/logpanel.png");
-	bottomPanelViewAction->setCheckable(true);
+	newManagedAction(menu, "bottompanel", outputView->toggleViewAction());
+	outputView->toggleViewAction()->setText(tr("Messages / Log File"));
+	outputView->toggleViewAction()->setIcon(QIcon(":/images/logpanel.png"));
 
 	newManagedAction(menu, "closesomething",tr("Close Something"), SLOT(viewCloseSomething()), Qt::Key_Escape);
 	
@@ -1575,6 +1565,7 @@ void Texmaker::needUpdatedCompleter(){
 	if (mCompleterNeedsUpdate)
 		updateCompleter();
 }
+
 void Texmaker::updateUserToolMenu(){
 	CommandMapping cmds = buildManager.getAllCommands();
 	QStringList order = buildManager.getCommandsOrder();
@@ -5041,8 +5032,9 @@ void Texmaker::updateCompleter() {
 	mCompleterNeedsUpdate=false;
 }
 
-void Texmaker::tabChanged(int i) {
-	if (i>0 && i<3 && !outputView->logPresent()) RealViewLog(true);
+
+void Texmaker::outputPageChanged(const QString &id) {
+	if ((id == "log" || id == "errors") && !outputView->logPresent()) RealViewLog(true);
 }
 
 void Texmaker::jumpToSearch(QDocument* doc, int lineNumber){

@@ -1,6 +1,7 @@
 #ifndef ANIMATEDSPLITTER_H
 #define ANIMATEDSPLITTER_H
 
+#include "mostQtHeaders.h"
 #include <QSplitter>
 
 class AnimatedSplitter : public QSplitter
@@ -30,13 +31,47 @@ private:
 };
 
 
-class AutoCollapsingFrame: public QFrame{
+// TODO: Maybe integrate in AutoCollapsingFrame or add basic aspects of the toolbar functionality
+/**
+ * A panel providing a convenience toggleViewAction
+**/
+class Panel: public QFrame{
+	Q_OBJECT
+public:
+	explicit Panel(QWidget *parent):
+		QFrame(parent)
+	{
+		mToggleViewAction = new QAction(this);
+		mToggleViewAction->setCheckable(true);
+		mToggleViewAction->setChecked(true);
+		connect(mToggleViewAction, SIGNAL(toggled(bool)), this, SLOT(viewToggled(bool)));
+	}
+
+	QAction *toggleViewAction() const {return mToggleViewAction;}
+
+public slots:
+	void setVisible(bool visible) {
+		QFrame::setVisible(visible);
+		mToggleViewAction->setChecked(visible);
+	}
+
+private slots:
+	void viewToggled(bool visible) { setVisible(visible); }
+
+private:
+	QAction *mToggleViewAction;
+
+};
+
+
+
+class AutoCollapsingPanel: public Panel{
 	Q_OBJECT
 public:
 	enum CollapseState {Expanded, Collapsed, Expanding, Collapsing};
 
-	explicit AutoCollapsingFrame(QWidget *parent=0) :
-		QFrame(parent), expandedWidth(100), clState(Expanded), mCollapsingEnabled(false), mAnimatedMotion(false)
+	explicit AutoCollapsingPanel(QWidget *parent=0) :
+		Panel(parent), expandedWidth(100), clState(Expanded), mCollapsingEnabled(false), mAnimatedMotion(false)
 	{
 		containingSplitter = qobject_cast<AnimatedSplitter *>(parent);
 		if (containingSplitter)
@@ -81,15 +116,15 @@ public slots:
 protected:
 	virtual int collapsedWidth() {qDebug() << 30; return 30;}
 	virtual void enterEvent(QEvent *event) {
-		QFrame::enterEvent(event);
+		Panel::enterEvent(event);
 		setCollapsed(false);
 	}
 	virtual void leaveEvent(QEvent *event) {
-		QFrame::leaveEvent(event);
+		Panel::leaveEvent(event);
 		setCollapsed(true);
 	}
 	virtual void resizeEvent(QResizeEvent *event) {
-		QFrame::resizeEvent(event);
+		Panel::resizeEvent(event);
 		if (clState == Collapsed && width() > collapsedWidth()) {
 			clState = Expanded;
 			qDebug() << "resize-event : state" << clState;
@@ -145,35 +180,5 @@ private:
 	bool mCollapsingEnabled;
 	bool mAnimatedMotion;
 };
-
-// TODO: Maybe integrate in AutoCollapsingFrame or add basic aspects of the toolbar functionality
-/**
- * A panel providing a convenience toggleViewAction
-**/
-class AutoCollapsingPanel: public AutoCollapsingFrame{
-	Q_OBJECT
-public:
-	explicit AutoCollapsingPanel(QWidget *parent): AutoCollapsingFrame(parent){
-		mToggleViewAction = new QAction(this);
-		mToggleViewAction->setCheckable(true);
-		mToggleViewAction->setChecked(true);
-		connect(mToggleViewAction, SIGNAL(toggled(bool)), this, SLOT(viewToggled(bool)));
-	}
-
-	QAction *toggleViewAction() const {return mToggleViewAction;}
-
-protected:
-	void setVisible(bool visible) {
-		AutoCollapsingFrame::setVisible(visible);
-		mToggleViewAction->setChecked(visible);
-	}
-
-private slots:
-	void viewToggled(bool visible) { setVisible(visible); }
-
-private:
-	QAction *mToggleViewAction;
-};
-
 
 #endif // ANIMATEDSPLITTER_H

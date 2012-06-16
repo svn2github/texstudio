@@ -6,6 +6,7 @@
 
 #include "mostQtHeaders.h"
 
+#include "titledpanel.h"
 #include "logeditor.h"
 #include "latexlog.h"
 #include "searchresultmodel.h"
@@ -17,7 +18,7 @@ class PreviewWidget : public QScrollArea
 {
 	Q_OBJECT
 public:
-    PreviewWidget(QWidget * parent = 0);
+	explicit PreviewWidget(QWidget * parent = 0);
 
 public slots:	
 	void previewLatex(const QPixmap& previewImage);
@@ -38,12 +39,11 @@ private:
 	bool mCenter;
 };
 
-class OutputViewWidget: public QFrame{
+class OutputViewWidget: public TitledPanel {
 	Q_OBJECT
 public:
-	OutputViewWidget(QWidget * parent = 0);
-	
-	
+	explicit OutputViewWidget(QWidget * parent = 0);
+
 	LatexLogModel* getLogModel();
 	void loadLogFile(const QString &logname, const QString & compiledFileName);
 	bool logPresent();
@@ -52,9 +52,6 @@ public:
 	void setSearchExpression(QString exp,bool isCase,bool isWord,bool isRegExp);
 	int getNextSearchResultColumn(QString text,int col);
 	bool childHasFocus();
-	int getShownPage(){
-		return OutputStackWidget->currentIndex();
-	}
 
 	virtual void changeEvent(QEvent *event);
 public slots:
@@ -76,15 +73,13 @@ public slots:
 signals:
 	void locationActivated(int line, QString fileName); //0-based line, absolute file name
 	void logEntryActivated(int logEntryNumber);
-	void tabChanged(int tab);
+	//void tabChanged(int tab);
 	void jumpToSearch(QDocument* doc,int lineNumber);
 private:
 	PreviewWidget *previewWidget;
-	QTableView *OutputTable, *OutputTable2;
-	QTreeView *OutputTree;
-	LogEditor *OutputTextEdit,*OutputLogTextEdit;	
-	QTabBar *logViewerTabBar; //header to select outp (if tabbedLogView, then it is OutputView's TitleBarWidget)
-	QStackedWidget*	OutputStackWidget;
+	QTableView *OutputErrorTable, *SplitViewOutputErrorTable;
+	QTreeView *OutputSearchTree;
+	LogEditor *OutputMessages,*SplitViewOutputLog;
 	//Latex errors
 	LatexLogModel * logModel; 
 	SearchResultModel *searchResultModel;

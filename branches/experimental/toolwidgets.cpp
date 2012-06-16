@@ -118,25 +118,25 @@ const int LAYOUT_PAGE_ERRORS=2;
 const int LAYOUT_PAGE_PREVIEW=3;
 const int LAYOUT_PAGE_SEARCH=4;
 	
-OutputViewWidget::OutputViewWidget(QWidget * parent): QFrame(parent), logModel(0), logpresent(false), tabbedLogView(false){
+OutputViewWidget::OutputViewWidget(QWidget * parent): TitledPanel(parent), logModel(0), logpresent(false), tabbedLogView(false){
 
 	logModel = new LatexLogModel(this);//needs loaded line marks
 	searchResultModel = new SearchResultModel(this);
 
-	OutputTable= new QTableView(this);
-	OutputTable2= new QTableView(this); // second table view for tab log view
+	SplitViewOutputErrorTable= new QTableView(this);
+	OutputErrorTable= new QTableView(this); // second table view for tab log view
 
 	// Search Results tree
 	SearchTreeDelegate *searchDelegate=new SearchTreeDelegate(this);
-	OutputTree= new QTreeView(this);
-	OutputTree->setUniformRowHeights(true);
-	OutputTree->setModel(searchResultModel);
-	OutputTree->setItemDelegate(searchDelegate);
-	connect(OutputTree,SIGNAL(clicked(QModelIndex)),this,SLOT(clickedSearchResult(QModelIndex)));
+	OutputSearchTree= new QTreeView(this);
+	OutputSearchTree->setUniformRowHeights(true);
+	OutputSearchTree->setModel(searchResultModel);
+	OutputSearchTree->setItemDelegate(searchDelegate);
+	connect(OutputSearchTree,SIGNAL(clicked(QModelIndex)),this,SLOT(clickedSearchResult(QModelIndex)));
 
 	QFontMetrics fm(QApplication::font());
 	for (int i=0;i<2;i++){ //setup tables
-		QTableView* table=(i==0)?OutputTable:OutputTable2;
+		QTableView* table=(i==0)?SplitViewOutputErrorTable:OutputErrorTable;
 		table->setModel(logModel);
 
 		table->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -167,43 +167,53 @@ OutputViewWidget::OutputViewWidget(QWidget * parent): QFrame(parent), logModel(0
 		table->setContextMenuPolicy(Qt::ActionsContextMenu);
 	}
 
-	OutputTextEdit = new LogEditor(this);
-	OutputTextEdit->setFocusPolicy(Qt::ClickFocus);
-	OutputTextEdit->setMinimumHeight(3*(fm.lineSpacing()+4));
-	OutputTextEdit->setReadOnly(true);
-	connect(OutputTextEdit, SIGNAL(clickOnLogLine(int)),this,SLOT(gotoLogLine(int)));
+	OutputMessages = new LogEditor(this);
+	OutputMessages->setFocusPolicy(Qt::ClickFocus);
+	OutputMessages->setMinimumHeight(3*(fm.lineSpacing()+4));
+	OutputMessages->setReadOnly(true);
+	connect(OutputMessages, SIGNAL(clickOnLogLine(int)),this,SLOT(gotoLogLine(int)));
 
-	OutputLogTextEdit = new LogEditor(this);
-	OutputLogTextEdit->setFocusPolicy(Qt::ClickFocus);
-	OutputLogTextEdit->setMinimumHeight(3*(fm.lineSpacing()+4));
-	OutputLogTextEdit->setReadOnly(true);
-	connect(OutputLogTextEdit, SIGNAL(clickOnLogLine(int)),this,SLOT(gotoLogLine(int)));
+	SplitViewOutputLog = new LogEditor(this);
+	SplitViewOutputLog->setFocusPolicy(Qt::ClickFocus);
+	SplitViewOutputLog->setMinimumHeight(3*(fm.lineSpacing()+4));
+	SplitViewOutputLog->setReadOnly(true);
+	connect(SplitViewOutputLog, SIGNAL(clickOnLogLine(int)),this,SLOT(gotoLogLine(int)));
 
-	OutputStackWidget= new QStackedWidget(this);
 
 	QVBoxLayout* OutputVLayout= new QVBoxLayout(); //contains the widgets for the normal mode (OutputTable + OutputLogTextEdit)
 	OutputVLayout->setSpacing(0);
 	OutputVLayout->setMargin(0);
 
 	// add widget to log view
-	OutputStackWidget->addWidget(OutputTextEdit);
+	appendPage(new TitledPanelPage(OutputMessages, "messages", tr("Messages")), false);
 
-	OutputVLayout->addWidget(OutputTable);
-	OutputVLayout->addWidget(OutputLogTextEdit);
+	OutputVLayout->addWidget(SplitViewOutputErrorTable);
+	OutputVLayout->addWidget(SplitViewOutputLog);
 	QWidget* tempWidget=new QWidget (this);
 	tempWidget->setLayout(OutputVLayout);
-	OutputStackWidget->addWidget(tempWidget);
 
-	OutputStackWidget->addWidget(OutputTable2);
+	TitledPanelPage *page = new TitledPanelPage(tempWidget, "log", tr("Log File"));
+	QAction *act = new QAction(QIcon(":images/test/Transition.png"), "Test action (no functionality)", page);
+	page->addToolbarAction(act);
+
+
+	appendPage(page, false);
+	appendPage(new TitledPanelPage(OutputErrorTable, "errors", tr("Errors")), false);
+
+
 
 	// previewer
 	previewWidget = new PreviewWidget(this);
-	OutputStackWidget->addWidget(previewWidget);
+	//previewWidget->hide();
+	//TODO why crashes?
+	appendPage(new TitledPanelPage(previewWidget, "preview", tr("Preview")), false);
 
 	// global search results
-	OutputStackWidget->addWidget(OutputTree);
+	appendPage(new TitledPanelPage(OutputSearchTree, "search", tr("Search")));
+
 
 	// order for tabbar
+	/*
 	logViewerTabBar=new QTabBar(this);
 	logViewerTabBar->addTab("m");
 	logViewerTabBar->addTab("l");
@@ -213,30 +223,24 @@ OutputViewWidget::OutputViewWidget(QWidget * parent): QFrame(parent), logModel(0
 	retranslateUi();
 	logViewerTabBar->hide(); //internal default is non tabbed mode
 
-	QVBoxLayout *vLayout = new QVBoxLayout(this);
-	vLayout->setSpacing(0);
-	vLayout->setMargin(0);
-	vLayout->addWidget(logViewerTabBar);
-	vLayout->addWidget(OutputStackWidget);
-	setLayout(vLayout);
 
 	connect(logViewerTabBar, SIGNAL(currentChanged(int)),
 			OutputStackWidget, SLOT(setCurrentIndex(int)));
 
 	connect(logViewerTabBar, SIGNAL(currentChanged(int)),
 	        this, SIGNAL(tabChanged(int)));
-
+	*/
 }
 void OutputViewWidget::setTabbedLogView(bool tabbed){
 	tabbedLogView=tabbed;
 	if (tabbed) {
 // TODO
 //		this->setTitleBarWidget(logViewerTabBar);
-		OutputTable->hide();
+		SplitViewOutputErrorTable->hide();
 	} else {
 // TODO
 //		this->setTitleBarWidget(0);
-		OutputTable->show();
+		SplitViewOutputErrorTable->show();
 	}
 }
 void OutputViewWidget::previewLatex(const QPixmap& pixmap){
@@ -283,7 +287,7 @@ QByteArray simplifyLineConserving(const QByteArray& ba)
 }
 
 void OutputViewWidget::loadLogFile(const QString &logname, const QString & compiledFileName){
-	OutputLogTextEdit->clear();
+	SplitViewOutputLog->clear();
 	QFile f(logname);
 	if (f.open(QIODevice::ReadOnly)) {
 
@@ -303,16 +307,16 @@ void OutputViewWidget::loadLogFile(const QString &logname, const QString & compi
 		QTextCodec * codec = guessEncodingBasic(fullLog, &sure);
         if (!sure || !codec) codec = QTextCodec::codecForLocale();
 		
-		OutputLogTextEdit->setPlainText(codec->toUnicode(fullLog));
+		SplitViewOutputLog->setPlainText(codec->toUnicode(fullLog));
 		
-        logModel->parseLogDocument(OutputLogTextEdit->document(), compiledFileName);
+		logModel->parseLogDocument(SplitViewOutputLog->document(), compiledFileName);
 
 		logpresent=true;		
 		//update table size
-		OutputTable->resizeColumnsToContents();
-		OutputTable->resizeRowsToContents();
-		OutputTable2->resizeColumnsToContents();
-		OutputTable2->resizeRowsToContents();	
+		SplitViewOutputErrorTable->resizeColumnsToContents();
+		SplitViewOutputErrorTable->resizeRowsToContents();
+		OutputErrorTable->resizeColumnsToContents();
+		OutputErrorTable->resizeRowsToContents();
 		
 		selectLogEntry(0,false);
 	}
@@ -322,25 +326,25 @@ bool OutputViewWidget::logPresent(){
 }
 bool OutputViewWidget::isPreviewPanelVisible(){
 	if (!isVisible()) return false;
-	return !tabbedLogView || logViewerTabBar->currentIndex()==LAYOUT_PAGE_PREVIEW;
+	return currentPageId() == "preview";
 }
 void OutputViewWidget::setMessage(const QString &message){
-	logViewerTabBar->setCurrentIndex(0);
-	OutputTextEdit->setText(message);
+	setCurrentPage("message");
+	OutputMessages->setText(message);
 }
 void OutputViewWidget::insertMessageLine(const QString &message){
-	OutputTextEdit->insertLine(message);
+	OutputMessages->insertLine(message);
 }
 void OutputViewWidget::copy(){
-	if (tabbedLogView && OutputStackWidget->currentIndex() == LAYOUT_PAGE_ERRORS)
+	if (currentPageId() == "errors")
 		copyMessage();
 	else
-		OutputLogTextEdit->copy();
+		SplitViewOutputLog->copy();
 }
 
 void OutputViewWidget::resetMessages(bool noTabChange){
-	OutputTextEdit->clear();
-	if(!noTabChange) logViewerTabBar->setCurrentIndex(0);
+	OutputMessages->clear();
+	if(!noTabChange) setCurrentPage("messages");
 }
 void OutputViewWidget::resetMessagesAndLog(bool noTabChange){
 	resetMessages(noTabChange);
@@ -352,32 +356,32 @@ void OutputViewWidget::resetLog(bool /*noTabChange*/){
 void OutputViewWidget::selectLogEntry(int logEntryNumber, bool makeVisible){
 	if (logEntryNumber<0 || logEntryNumber>=logModel->count()) return;
 	if (makeVisible) showErrorListOrLog();
-	OutputTable->scrollTo(logModel->index(logEntryNumber,1),QAbstractItemView::PositionAtCenter);
-	OutputTable->selectRow(logEntryNumber);
-	OutputTable2->scrollTo(logModel->index(logEntryNumber,1),QAbstractItemView::PositionAtCenter);
-	OutputTable2->selectRow(logEntryNumber);
-	OutputLogTextEdit->setCursorPosition(logModel->at(logEntryNumber).logline, 0);
+	SplitViewOutputErrorTable->scrollTo(logModel->index(logEntryNumber,1),QAbstractItemView::PositionAtCenter);
+	SplitViewOutputErrorTable->selectRow(logEntryNumber);
+	OutputErrorTable->scrollTo(logModel->index(logEntryNumber,1),QAbstractItemView::PositionAtCenter);
+	OutputErrorTable->selectRow(logEntryNumber);
+	SplitViewOutputLog->setCursorPosition(logModel->at(logEntryNumber).logline, 0);
 }
 void OutputViewWidget::showLogOrErrorList(bool noTabChange){
 	if (!isVisible()) show();
-	if (OutputStackWidget->currentIndex()!=LAYOUT_PAGE_LOG && OutputStackWidget->currentIndex()!=LAYOUT_PAGE_ERRORS &&!noTabChange)
-		logViewerTabBar->setCurrentIndex(LAYOUT_PAGE_LOG);
+	QString id = currentPageId();
+	if (id != "log" && id != "errors" && !noTabChange)
+		setCurrentPage("log");
 }
 void OutputViewWidget::showErrorListOrLog(){
 	if (!isVisible()) show();
-	if (tabbedLogView) {
-		if (OutputStackWidget->currentIndex()!=LAYOUT_PAGE_LOG)
-			logViewerTabBar->setCurrentIndex(LAYOUT_PAGE_ERRORS);
-	} else logViewerTabBar->setCurrentIndex(LAYOUT_PAGE_LOG);
+	if (currentPageId() != "log")
+		setCurrentPage("errors");
 }
+
 void OutputViewWidget::showPreview(){
 	if (!isVisible()) show();
-	logViewerTabBar->setCurrentIndex(LAYOUT_PAGE_PREVIEW);
+	setCurrentPage("preview");
 }
 
 void OutputViewWidget::showSearchResults(){
 	if (!isVisible()) show();
-	logViewerTabBar->setCurrentIndex(LAYOUT_PAGE_SEARCH);
+	setCurrentPage("search");
 }
 void OutputViewWidget::gotoLogEntry(int logEntryNumber) {
 	if (logEntryNumber<0 || logEntryNumber>=logModel->count()) return;
@@ -390,11 +394,13 @@ void OutputViewWidget::gotoLogEntry(int logEntryNumber) {
 }
 
 void OutputViewWidget::retranslateUi(){
+	/* TODO obsolete
 	logViewerTabBar->setTabText(0,tr("Messages"));
 	logViewerTabBar->setTabText(1,tr("Log File"));
 	logViewerTabBar->setTabText(2,tr("Errors"));
 	logViewerTabBar->setTabText(3,tr("Preview"));
 	logViewerTabBar->setTabText(4,tr("Search Results"));
+	*/
 }
 
 void OutputViewWidget::clickedOnLogModelIndex(const QModelIndex& index){
@@ -405,7 +411,7 @@ void OutputViewWidget::gotoLogLine(int logLine){
 }
 
 void OutputViewWidget::copyMessage(){
-	QModelIndex curMessage = tabbedLogView ? OutputTable2->currentIndex() : OutputTable->currentIndex();
+	QModelIndex curMessage = tabbedLogView ? OutputErrorTable->currentIndex() : SplitViewOutputErrorTable->currentIndex();
 	if (!curMessage.isValid()) return;
 	curMessage = logModel->index(curMessage.row(), 3);
 	REQUIRE(QApplication::clipboard());
@@ -427,8 +433,8 @@ void OutputViewWidget::copyAllMessagesWithLineNumbers(){
 }
 
 void OutputViewWidget::showMessageInLog(){
-	logViewerTabBar->setCurrentIndex(LAYOUT_PAGE_LOG);
-	QModelIndex curMessage = tabbedLogView ? OutputTable2->currentIndex() : OutputTable->currentIndex();
+	setCurrentPage("log");
+	QModelIndex curMessage = tabbedLogView ? OutputErrorTable->currentIndex() : SplitViewOutputErrorTable->currentIndex();
 	if (!curMessage.isValid()) return;
 	gotoLogEntry(curMessage.row());
 }
@@ -450,7 +456,7 @@ int OutputViewWidget::getNextSearchResultColumn(QString text,int col){
         return searchResultModel->getNextSearchResultColumn(text,col);
 }
 bool OutputViewWidget::childHasFocus(){
-	return OutputLogTextEdit->hasFocus() || (tabbedLogView?OutputTable2->hasFocus():OutputTable->hasFocus());
+	return SplitViewOutputLog->hasFocus() || (tabbedLogView?OutputErrorTable->hasFocus():SplitViewOutputErrorTable->hasFocus());
 }
 
 void OutputViewWidget::changeEvent(QEvent *event){

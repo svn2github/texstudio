@@ -118,7 +118,8 @@ HEADERS += texmaker.h \
     cleandialog.h \
     animatedsplitter.h \
     leftpanel.h \
-    qmetautils.h
+    qmetautils.h \
+    titledpanel.h
 SOURCES += main.cpp \
     buildmanager.cpp \
     dsingleapplication.cpp \
@@ -203,7 +204,8 @@ SOURCES += main.cpp \
     cleandialog.cpp \
     animatedsplitter.cpp \
     leftpanel.cpp \
-    qmetautils.cpp
+    qmetautils.cpp \
+    titledpanel.cpp
 RESOURCES += texstudio.qrc \
     symbols.qrc
 FORMS += structdialog.ui \

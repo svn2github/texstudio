@@ -422,7 +422,7 @@ protected slots:
 	void completerNeedsUpdate();
 	void needUpdatedCompleter();
 	
-	void tabChanged(int i);
+	void outputPageChanged(const QString &id);
 	
 	void gotoLine(int line);  //0 based
 	void gotoLocation(int line, const QString &fileName);  //0 based, absolute file name

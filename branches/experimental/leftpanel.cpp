@@ -2,7 +2,6 @@
 
 Q_DECLARE_METATYPE(QAction*)
 
-
 LeftPanel::LeftPanel(QWidget *parent) :
 	AutoCollapsingPanel(parent), vLayout(0), topbar(0), collapsedTopbar(0), contentsArea(0), toolbox(0), stack(0), sidebar(0), cbTopbarSelector(0)
 {
@@ -52,7 +51,7 @@ LeftPanel::LeftPanel(QWidget *parent) :
 	act->setIcon(QIcon(":/images/test/closebutton.png"));
 	act->setToolTip(tr("Close"));
 	topbar->addAction(act);
-	connect(act, SIGNAL(clicked()), this, SLOT(hide()));
+	connect(act, SIGNAL(triggered()), this, SLOT(hide()));
 
 	contentsArea = new QWidget();
 	contentsArea->setContentsMargins(0,0,0,0);
@@ -74,7 +73,6 @@ void LeftPanel::addWidget(QWidget* widget, const QString& id, const QString& tex
 	widget->setProperty("id",id);
 	widget->setProperty("Name",text);
 	widget->setProperty("iconName",iconName);
-	widget->setProperty("StructPos",widgets.size());
 
 	QAction *Act = new QAction(text, this);
 	Act->setCheckable(true);
