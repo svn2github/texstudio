@@ -5219,9 +5219,10 @@ void Texmaker::updateOpenDocumentMenu(bool localChange){
 	QEditor* ed = currentEditor();
 	//if (!ed) return;
 	if (localChange) {
-		QString id = "doc"+QString::number(EditorView->currentIndex());
+		int idx = EditorView->currentIndex();
+		QString id = "doc"+QString::number(idx);
 		QMenu* menu = configManager.getManagedMenu("main/view/documents");
-		configManager.newManagedAction(menu, id, ed->fileName().isEmpty() ? tr("untitled") : ed->name().replace("&","&&"), SLOT(gotoOpenDocument()));
+		configManager.newManagedAction(menu, id, ed->fileName().isEmpty() ? tr("untitled") : ed->name().replace("&","&&"), SLOT(gotoOpenDocument()))->setData(idx);
 		return;
 	}
 	QStringList sl;
