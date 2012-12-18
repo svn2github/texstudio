@@ -2355,7 +2355,7 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
 &lt;b&gt;&quot;&lt;/b&gt;: enclose in double-quotes, &lt;b&gt;.&lt;/b&gt; (dot) add a point at the end, (space): add a space at the end&lt;br /&gt;
 &lt;i&gt;Examples:&lt;/i&gt; &lt;b&gt;?ame&quot;&lt;/b&gt;: complete absolute filename enclosed in double-quotes, &lt;b&gt;?e)&lt;/b&gt; just the extension without leading dot (e.g. tex), &lt;br /&gt;
 &lt;b&gt;?m&quot;&lt;/b&gt; double-quoted filename without extension (identical to &lt;b&gt;%&lt;/b&gt;), &lt;b&gt;?me&lt;/b&gt; filename with extension (e.g.example.tex)</source>
-        <translation>&lt;i&gt;Sélecteurs :&lt;/i&gt; une combinaison de &lt;b&gt;a&lt;/b&gt; : chemin absolu, &lt;!--&lt;i&gt;r&lt;/i&gt; : chemin relativf, --&gt;&lt;b&gt;m&lt;/b&gt; : base du nom de fichier sans extension,&lt;b&gt;e&lt;/b&gt; : extension&lt;br /&gt;
+        <translation type="obsolete">&lt;i&gt;Sélecteurs :&lt;/i&gt; une combinaison de &lt;b&gt;a&lt;/b&gt; : chemin absolu, &lt;!--&lt;i&gt;r&lt;/i&gt; : chemin relativf, --&gt;&lt;b&gt;m&lt;/b&gt; : base du nom de fichier sans extension,&lt;b&gt;e&lt;/b&gt; : extension&lt;br /&gt;
 préfixe &lt;b&gt;c&lt;/b&gt; pour le fichier en cours plutôt que le document maître (inclut le deux-points)&lt;br /&gt;
 &lt;i&gt;Caractère terminaux :&lt;/i&gt; &lt;b&gt;)&lt;/b&gt; : termine le sélecteur. Les caractères suivants terminent le sélecteur et ont des significations supplémentaires :&lt;br /&gt;
 &lt;b&gt;&quot;&lt;/b&gt; : insère dans des guillemets, &lt;b&gt;.&lt;/b&gt; (point) ajoute un point à la fin, (espace) : ajoute un espace à la fin&lt;br /&gt;
@@ -2463,6 +2463,20 @@ préfixe &lt;b&gt;c&lt;/b&gt; pour le fichier en cours plutôt que le document m
     <message>
         <source>Automatically load included files</source>
         <translation>Charger automatiquement les fichiers inclus</translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Selectors:&lt;/i&gt; a combination of &lt;b&gt;a&lt;/b&gt;: absolute path, &lt;!--&lt;i&gt;r&lt;/i&gt;: relative path, --&gt;&lt;b&gt;m&lt;/b&gt;: basefile name without extension,&lt;b&gt;e&lt;/b&gt;: extension, &lt;b&gt;r&lt;/b&gt;: path relative to master, &lt;b&gt;*&lt;/b&gt;: all files matching the following pattern&lt;br /&gt;
+prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include the colon)&lt;br /&gt;
+&lt;i&gt;Terminating chars:&lt;/i&gt; &lt;b&gt;)&lt;/b&gt;: ends selector. The following chars end the selector and have additional meaning&lt;br /&gt;
+&lt;b&gt;&quot;&lt;/b&gt;: enclose in double-quotes, &lt;b&gt;.&lt;/b&gt; (dot) add a point at the end, (space): add a space at the end&lt;br /&gt;
+&lt;i&gt;Examples:&lt;/i&gt; &lt;b&gt;?ame&quot;&lt;/b&gt;: complete absolute filename enclosed in double-quotes, &lt;b&gt;?e)&lt;/b&gt; just the extension without leading dot (e.g. tex), &lt;br /&gt;
+&lt;b&gt;?m&quot;&lt;/b&gt; double-quoted filename without extension (identical to &lt;b&gt;%&lt;/b&gt;), &lt;b&gt;?me&lt;/b&gt; filename with extension (e.g. example.tex), &lt;b&gt;?*.aux&lt;/b&gt;: all .aux files in the current directory</source>
+        <translation>&lt;i&gt;Sélecteurs :&lt;/i&gt; une combinaison de &lt;b&gt;a&lt;/b&gt; : chemin absolu, &lt;!--&lt;i&gt;r&lt;/i&gt; : chemin relatif, --&gt;&lt;b&gt;m&lt;/b&gt; : base du nom de fichier sans extension,&lt;b&gt;e&lt;/b&gt; : extension, &lt;b&gt;r&lt;/b&gt; : chemin relatif au document maître, &lt;b&gt;*&lt;/b&gt; : tous les fichiers correspondant au motif suivant&lt;br /&gt;
+préfixe &lt;b&gt;c&lt;/b&gt; pour le fichier en cours plutôt que le document maître (inclut le deux-points)&lt;br /&gt;
+&lt;i&gt;Caractères terminaux :&lt;/i&gt; &lt;b&gt;)&lt;/b&gt; : termine le sélecteur. Les caractères suivants terminent le sélecteur et ont des significations supplémentaires :&lt;br /&gt;
+&lt;b&gt;&quot;&lt;/b&gt; : insère dans des guillemets, &lt;b&gt;.&lt;/b&gt; (point) ajoute un point à la fin, (espace) : ajoute un espace à la fin&lt;br /&gt;
+&lt;i&gt;Exemples :&lt;/i&gt; &lt;b&gt;?ame&quot;&lt;/b&gt;: nom de fichier avec chemin absolu complet et extension, entourés de guillemets, &lt;b&gt;?e)&lt;/b&gt; extension seule sans point (p. ex. tex), &lt;br /&gt;
+&lt;b&gt;?m&quot;&lt;/b&gt; nom de fichier sans extension, entouré de guillemets (identique à &lt;b&gt;%&lt;/b&gt;), &lt;b&gt;?me&lt;/b&gt; nom de fichier avec extension (p.ex. exemple.tex), &lt;b&gt;?*.aux&lt;/b&gt; : tous les fichiers .aux files du répertoire courant</translation>
     </message>
 </context>
 <context>
@@ -6815,7 +6829,7 @@ If not, they will not be available via the Make Template dialog.</source>
         <translation>TeXstudio a trouvé des modèles personnels à des emplacements obsolètes.
 Désomais, les modèles personnels sont stockés ici :
 %1.
-TeXstudio doit-il déplacer les mmodèles personnels ici ?
+TeXstudio doit-il y déplacer les modèles personnels existants ?
 Sinon, ils ne seront pas disponibles dans la boîte de dialogue « Créer un modèle ».</translation>
     </message>
     <message>
@@ -8298,7 +8312,7 @@ Faites-vous confiance à ce document ?</translation>
     </message>
     <message>
         <source>No, run the default command</source>
-        <translation>No, lancer la compilation par défaut</translation>
+        <translation>Non, lancer la commande par défaut</translation>
     </message>
     <message>
         <source>&amp;User</source>
@@ -8348,11 +8362,11 @@ Faites-vous confiance à ce document ?</translation>
     </message>
     <message>
         <source>Yes, always run the overridden command</source>
-        <translation>Oui, toujours lancer la compilation de remplacement</translation>
+        <translation>Oui, toujours lancer la commande de remplacement</translation>
     </message>
     <message>
         <source>Yes, allow all documents to use the overridden command</source>
-        <translation>Oui, autoriser tous les documents à utiliser la compilation de remplacement</translation>
+        <translation>Oui, autoriser tous les documents à utiliser la commande de remplacement</translation>
     </message>
     <message>
         <source>TeXstudio Emergency</source>
