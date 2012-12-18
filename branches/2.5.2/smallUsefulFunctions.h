@@ -16,7 +16,7 @@
 //#inlcude "latexcompleter_config.h"
 
 #define TEXSTUDIO "TeXstudio"
-#define TXSVERSION "2.5.1"
+#define TXSVERSION "2.5.2"
 #define TXSVERSION_NUMERIC 0x020501
 
 extern const char* TEXSTUDIO_SVN_VERSION;
