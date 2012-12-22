@@ -49,7 +49,7 @@ Source: utilities\usermanual_en.html; DestDir: {app}\help
 Source: utilities\usermanual.css; DestDir: {app}\help
 
 Source: utilities\TexTablet\*; DestDir: {app}\TexTablet
-Source: utilities\poppler-data\*; DestDir: {app}\share\poppler Flags: recursesubdirs
+Source: utilities\poppler-data\*; DestDir: {app}\share\poppler; Flags: recursesubdirs
 Source: templates\*; DestDir: {app}\templates
 
 ; Commented out translations are not packaged because they are stongly incomplete
