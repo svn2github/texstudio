@@ -1890,7 +1890,7 @@ void Texmaker::fileNewFromTemplate() {
 			QString line = in.readLine();
 			mTemplate+=line+"\n";
 		}
-		CodeSnippet toInsert(mTemplate);
+		CodeSnippet toInsert(mTemplate, false);
 		bool flag=edit->editor->flag(QEditor::AutoIndent);
 		edit->editor->setFlag(QEditor::AutoIndent,false);
 		toInsert.insert(edit->editor);
@@ -3794,7 +3794,7 @@ void Texmaker::InsertFromAction() {
   CodeSnippet cs=CodeSnippet(action->data().toString());
         cs.insertAt(currentEditorView()->editor,&c);*/
     edView->insertMacro(action->data().toString(),QRegExp(),0,true);
-    outputView->setMessage(CodeSnippet(action->whatsThis()).lines.join("\n"));
+	outputView->setMessage(CodeSnippet(action->whatsThis(), false).lines.join("\n"));
   }
 }
 
@@ -4111,7 +4111,7 @@ void Texmaker::InsertBibEntryFromAction(){
 
 	QString insertText=BibTeXDialog::textToInsert(action->data().toString());
 	if (!insertText.isEmpty())
-		CodeSnippet(insertText).insert(currentEditor());
+		CodeSnippet(insertText, false).insert(currentEditor());
 }
 
 void Texmaker::InsertBibEntry(const QString& id){
@@ -4140,7 +4140,7 @@ void Texmaker::InsertBibEntry(const QString& id){
 			bd->resultString="\n"+bd->resultString;
 		}
 		
-		CodeSnippet(bd->resultString).insert(currentEditor());
+		CodeSnippet(bd->resultString, false).insert(currentEditor());
 	}
 	delete bd;
 }
@@ -5152,7 +5152,7 @@ void Texmaker::generateAddtionalTranslations(){
 			translations << "QT_TRANSLATE_NOOP(\"ConfigManager\", \""+text.replace("\\","\\\\").replace("\"","\\\"")+"\"), ";
 		QString insert = attribs.namedItem("insert").nodeValue();
 		if (insert != "") {
-			CodeSnippet cs(insert);
+			CodeSnippet cs(insert, false);
 			for (int i=0;i<cs.placeHolders.size();i++)
 				for (int j=0;j<cs.placeHolders[i].size();j++)
 					if (cs.placeHolders[i][j].flags & CodeSnippetPlaceHolder::Translatable)
