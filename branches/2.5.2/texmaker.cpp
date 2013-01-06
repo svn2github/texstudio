@@ -117,6 +117,7 @@ Texmaker::Texmaker(QWidget *parent, Qt::WFlags flags, QSplashScreen *splash)
 	qRegisterMetaType<LatexParser>();
 	latexParser.importCwlAliases();
 	
+	m_formatsOldDefault = QDocument::defaultFormatScheme();
 	QDocument::setDefaultFormatScheme(m_formats);
 	SpellerUtility::spellcheckErrorFormat = m_formats->id("spellingMistake");
 	
@@ -320,6 +321,9 @@ Texmaker::Texmaker(QWidget *parent, Qt::WFlags flags, QSplashScreen *splash)
 
 
 Texmaker::~Texmaker(){
+
+	QDocument::setDefaultFormatScheme(m_formatsOldDefault); //prevents crash when deleted latexeditorview accesses the default format scheme, as m_format is going to be deleted
+
 	programStopped = true;
 
 	Guardian::shutdown();

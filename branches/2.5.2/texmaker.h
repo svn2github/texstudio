@@ -114,7 +114,7 @@ private:
 	
 	void updateUserMacros(bool updateMenu = true);
 	
-	QFormatFactory *m_formats;
+	QFormatScheme *m_formats, *m_formatsOldDefault;
 	QLanguageFactory* m_languages;
 	LatexCompleter* completer;
 	
