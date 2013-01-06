@@ -1,7 +1,0 @@
-?package(texstudio):\
-    needs="x11"\
-    section="Applications/Office"\
-    title="TeXstudio"\
-    longtitle="LaTeX IDE"\
-    icon="/usr/share/pixmaps/texstudio.xpm"\
-    command="/usr/bin/texstudio"
