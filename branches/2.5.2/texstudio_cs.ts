@@ -155,55 +155,55 @@
     </message>
     <message>
         <source>Article in &amp;Journal</source>
-        <translation>Článek v č&amp;asopise</translation>
+        <translation>Článek v č&amp;asopise - @article</translation>
     </message>
     <message>
         <source>Article in Conference &amp;Proceedings</source>
-        <translation>Článek ve sborníku ze &amp;zasedání</translation>
+        <translation>Článek ve sborníku ze &amp;zasedání - @inproceedings</translation>
     </message>
     <message>
         <source>Article in a &amp;Collection</source>
-        <translation>Článek ve &amp;sbírce</translation>
+        <translation>Článek ve &amp;sbírce - @incollection</translation>
     </message>
     <message>
         <source>Chapter or &amp;Pages in a Book</source>
-        <translation>Kapitola nebo s&amp;trany v knize</translation>
+        <translation>Kapitola nebo s&amp;trany v knize - @inbook</translation>
     </message>
     <message>
         <source>Conference Pr&amp;oceedings</source>
-        <translation>Sborník ze z&amp;asedání</translation>
+        <translation>Sborník ze z&amp;asedání - @proceedings</translation>
     </message>
     <message>
         <source>&amp;Book</source>
-        <translation>&amp;Kniha</translation>
+        <translation>&amp;Kniha - @book</translation>
     </message>
     <message>
         <source>Book&amp;let</source>
-        <translation>K&amp;nížečka</translation>
+        <translation>K&amp;nížečka - @booklet</translation>
     </message>
     <message>
         <source>PhD. &amp;Thesis</source>
-        <translation>&amp;Doktorská práce</translation>
+        <translation>&amp;Doktorská práce - @phdthesis</translation>
     </message>
     <message>
         <source>&amp;Master&apos;s Thesis</source>
-        <translation>Diplomová práce (&amp;magisterská)</translation>
+        <translation>Di&amp;plomová práce - @masterthesis</translation>
     </message>
     <message>
         <source>Technical &amp;Report</source>
-        <translation>Technická z&amp;práva</translation>
+        <translation>Technická z&amp;práva - @techreport</translation>
     </message>
     <message>
         <source>Technical Ma&amp;nual</source>
-        <translation>Technická přír&amp;učka</translation>
+        <translation>Technická dok&amp;umentace - @manual</translation>
     </message>
     <message>
         <source>&amp;Unpublished</source>
-        <translation>&amp;Nezveřejněný</translation>
+        <translation>&amp;Neuveřejněno - @unpublished</translation>
     </message>
     <message>
         <source>Miscellan&amp;eous</source>
-        <translation>&amp;Různé</translation>
+        <translation>&amp;Různé - @misc</translation>
     </message>
     <message>
         <source>Insert in File:</source>
@@ -223,71 +223,71 @@
     </message>
     <message>
         <source>&amp;Multi-volume Book</source>
-        <translation>&amp;Vícesvazková kniha</translation>
+        <translation>&amp;Vícesvazková kniha - @mvbook</translation>
     </message>
     <message>
         <source>Part of a Book With Its Own Title</source>
-        <translation>Část knihy s vlastním názvem</translation>
+        <translation>Část knihy s vlastním názvem - @inbook</translation>
     </message>
     <message>
         <source>Book in Book</source>
-        <translation>Kniha v knize</translation>
+        <translation>Kniha v knize - @bookinbook</translation>
     </message>
     <message>
         <source>Supplemental Material in a Book</source>
-        <translation>Doplňkový materiál v knize</translation>
+        <translation>Doplňkový materiál ke knize - @suppbook</translation>
     </message>
     <message>
         <source>Single-volume Collection</source>
-        <translation>Jednosvazková sbírka</translation>
+        <translation>Jednosvazková sbírka - @collection</translation>
     </message>
     <message>
         <source>Multi-volume Collection</source>
-        <translation>Vícesvazková sbírka</translation>
+        <translation>Vícesvazková sbírka - @mvcollection</translation>
     </message>
     <message>
         <source>Supplemental Material in a Collection</source>
-        <translation>Doplňkový materiál ve sbírce</translation>
+        <translation>Doplňkový materiál ke sbírce - @suppcollection</translation>
     </message>
     <message>
         <source>Online Resource</source>
-        <translation>Internetový zdroj</translation>
+        <translation>Internetový zdroj - @online</translation>
     </message>
     <message>
         <source>Patent</source>
-        <translation>Patent</translation>
+        <translation>Patent - @patent</translation>
     </message>
     <message>
         <source>Complete Issue of a Periodical</source>
-        <translation>Celé vydání časopisu</translation>
+        <translation>Celé vydání časopisu - @periodical</translation>
     </message>
     <message>
         <source>Supplemental Material in a Periodical</source>
-        <translation>Doplňkový materiál v časopisu</translation>
+        <translation>Doplňkový materiál v časopisu - @suppperiodical</translation>
     </message>
     <message>
         <source>Multi-volume Proceedings Entry</source>
-        <translation>Záznam vícesvazkového sborníku</translation>
+        <translation>Záznam vícesvazkového sborníku ze zasedání - @mvproceedings</translation>
     </message>
     <message>
         <source>Reference</source>
-        <translation>Odkaz</translation>
+        <translation>Dílo s odkazy - @reference</translation>
     </message>
     <message>
         <source>Multi-volume Reference Entry</source>
-        <translation>Vícesvazkový záznam odkazů</translation>
+        <translation>Záznam ve vícesvazkovém díle s odkazy - @inreference</translation>
     </message>
     <message>
         <source>Article in a Reference</source>
-        <translation>Článek v odkazu</translation>
+        <translation>Článek v díle s odkazy - @inreference</translation>
     </message>
     <message>
         <source>&amp;Report</source>
-        <translation>&amp;Zpráva</translation>
+        <translation>&amp;Zpráva - @report</translation>
     </message>
     <message>
         <source>&amp;Thesis</source>
-        <translation>&amp;Doktorská práce</translation>
+        <translation>&amp;Doktorská práce - @thesis</translation>
     </message>
     <message>
         <source>New BibLaTeX Entry</source>
@@ -302,19 +302,19 @@
     <name>Bookmarks</name>
     <message>
         <source>Move Up</source>
-        <translation type="unfinished">Posunout nahoru</translation>
+        <translation>Posunout nahoru</translation>
     </message>
     <message>
         <source>Move Down</source>
-        <translation type="unfinished">Posunout dolů</translation>
+        <translation>Posunout dolů</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Odstranit</translation>
+        <translation>Odstranit</translation>
     </message>
     <message>
         <source>Remove All</source>
-        <translation type="unfinished">Odstranit vše</translation>
+        <translation>Odstranit vše</translation>
     </message>
 </context>
 <context>
@@ -1756,7 +1756,7 @@ chcete nastavit?</translation>
     </message>
     <message>
         <source>Spelling Dictionary Directory:</source>
-        <translation>Adresář pro slovník pro pravopis:</translation>
+        <translation>Adresář pro pravopisný slovník:</translation>
     </message>
     <message>
         <source>Default Language:</source>
@@ -2255,11 +2255,11 @@ dát před &lt;b&gt;c:&lt;/b&gt; pro nynější soubor místo hlavního souboru 
     </message>
     <message>
         <source>Draw cursor as a thick line</source>
-        <translation>Kreslit ukazovátko jako tlustou čáru</translation>
+        <translation>Kreslit ukazatel jako tlustou čáru</translation>
     </message>
     <message>
         <source>Bold Cursor</source>
-        <translation>Tučné ukazovátko</translation>
+        <translation>Tučný ukazatel</translation>
     </message>
     <message>
         <source>Table Autoformating</source>
@@ -2316,7 +2316,12 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
 &lt;b&gt;&quot;&lt;/b&gt;: enclose in double-quotes, &lt;b&gt;.&lt;/b&gt; (dot) add a point at the end, (space): add a space at the end&lt;br /&gt;
 &lt;i&gt;Examples:&lt;/i&gt; &lt;b&gt;?ame&quot;&lt;/b&gt;: complete absolute filename enclosed in double-quotes, &lt;b&gt;?e)&lt;/b&gt; just the extension without leading dot (e.g. tex), &lt;br /&gt;
 &lt;b&gt;?m&quot;&lt;/b&gt; double-quoted filename without extension (identical to &lt;b&gt;%&lt;/b&gt;), &lt;b&gt;?me&lt;/b&gt; filename with extension (e.g. example.tex), &lt;b&gt;?*.aux&lt;/b&gt;: all .aux files in the current directory</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;Přepínače:&lt;/i&gt; spojení &lt;b&gt;a&lt;/b&gt;: absolutní cesty, &lt;!--&lt;i&gt;r&lt;/i&gt;: relative path, --&gt;&lt;b&gt;m&lt;/b&gt;: základní název souboru bez přípony,&lt;b&gt;e&lt;/b&gt;: přípona, &lt;b&gt;r&lt;/b&gt;: cesta relativní k hlavnímu souboru, &lt;b&gt;*&lt;/b&gt;: všechny soubory odpovídající následujícímu vzoru&lt;br /&gt;
+dát před &lt;b&gt;c:&lt;/b&gt; pro nynější soubor místo hlavního souboru (zahrnout dvojtečku)&lt;br /&gt;
+&lt;i&gt;Ukončující znaky:&lt;/i&gt; &lt;b&gt;)&lt;/b&gt;: ukončuje přepínač. Následující znaky a přepínač mají další význam&lt;br /&gt;
+&lt;b&gt;&quot;&lt;/b&gt;: uzavřít v dvojitých uvozovkách, &lt;b&gt;.&lt;/b&gt; (tečka) přidat tečku na konec, (mezera): přidat mezeru na konec&lt;br /&gt;
+&lt;i&gt;Příklady:&lt;/i&gt; &lt;b&gt;?ame&quot;&lt;/b&gt;: doplnit absolutní název souboru uzavřený v dvojitých uvozovkách, &lt;b&gt;?e)&lt;/b&gt; pouze přípona bez tečky na začátku (např. tex), &lt;br /&gt;
+&lt;b&gt;?m&quot;&lt;/b&gt; název souboru v dvojitých uvozovkách bez přípony (totéž co &lt;b&gt;%&lt;/b&gt;), &lt;b&gt;?me&lt;/b&gt; název souboru s příponou (např.example.tex), &lt;b&gt;?*.aux&lt;/b&gt;: všechny soubory .aux v nynějším adresáři</translation>
     </message>
 </context>
 <context>
@@ -2391,31 +2396,31 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
     </message>
     <message>
         <source>part</source>
-        <translation>part - Část</translation>
+        <translation>Část - \part</translation>
     </message>
     <message>
         <source>chapter</source>
-        <translation>chapter - Kapitola</translation>
+        <translation>Kapitola - \chapter</translation>
     </message>
     <message>
         <source>section</source>
-        <translation>section - Oddíl</translation>
+        <translation>Oddíl - \section</translation>
     </message>
     <message>
         <source>subsection</source>
-        <translation>subsection - Pododdíl</translation>
+        <translation>Pododdíl - \subsection</translation>
     </message>
     <message>
         <source>subsubsection</source>
-        <translation>subsubsection - Podpododdíl</translation>
+        <translation>Podpododdíl - \subsubsection</translation>
     </message>
     <message>
         <source>paragraph</source>
-        <translation>paragraph - Odstavec</translation>
+        <translation>Odstavec - \paragraph</translation>
     </message>
     <message>
         <source>subparagraph</source>
-        <translation>subparagraph - Pododstavec</translation>
+        <translation>Pododstavec - \subparagraph</translation>
     </message>
     <message>
         <source>part*</source>
@@ -2499,19 +2504,19 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
     </message>
     <message>
         <source>\begin{itemize}</source>
-        <translation></translation>
+        <translation>Po&amp;ložkový seznam - \begin{itemize}</translation>
     </message>
     <message>
         <source>\begin{enumerate}</source>
-        <translation></translation>
+        <translation>&amp;Výčtový seznam - \begin{enumerate}</translation>
     </message>
     <message>
         <source>\begin{description}</source>
-        <translation></translation>
+        <translation>&amp;Popisový seznam - \begin{description}</translation>
     </message>
     <message>
         <source>\begin{list}</source>
-        <translation></translation>
+        <translation>Obecný seznam - \begin{list}</translation>
     </message>
     <message>
         <source>Font St&amp;yles</source>
@@ -2555,39 +2560,39 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
     </message>
     <message>
         <source>tiny</source>
-        <translation>drobné</translation>
+        <translation>Drobné - \tiny</translation>
     </message>
     <message>
         <source>scriptsize</source>
-        <translation>skriptové</translation>
+        <translation>Velikost indexu - \scriptsize</translation>
     </message>
     <message>
         <source>footnotesize</source>
-        <translation>velké jako poznámka pod čarou</translation>
+        <translation>Velikost poznámky pod čarou - \footnotesize</translation>
     </message>
     <message>
         <source>small</source>
-        <translation>malé</translation>
+        <translation>Malé - \small</translation>
     </message>
     <message>
         <source>normalsize</source>
-        <translation>obvyklé</translation>
+        <translation>Obvyklá velikost - \normalsize</translation>
     </message>
     <message>
         <source>large</source>
-        <translation>velké</translation>
+        <translation>Velké - \large</translation>
     </message>
     <message>
         <source>Large</source>
-        <translation>Velké</translation>
+        <translation>Velmi velké - \Large</translation>
     </message>
     <message>
         <source>LARGE</source>
-        <translation>VELKÉ</translation>
+        <translation>Velmi velmi velké - \LARGE</translation>
     </message>
     <message>
         <source>Huge</source>
-        <translation>Obrovské</translation>
+        <translation>Opravdu obrovské - \Huge</translation>
     </message>
     <message>
         <source>&amp;Tabular Environment</source>
@@ -2595,11 +2600,11 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
     </message>
     <message>
         <source>\begin{tabbing}</source>
-        <translation></translation>
+        <translation>Tabelace - \begin{tabbing}</translation>
     </message>
     <message>
         <source>\begin{tabular}</source>
-        <translation></translation>
+        <translation>Tabulka - \begin{tabular}</translation>
     </message>
     <message>
         <source>S&amp;pacing</source>
@@ -2611,19 +2616,19 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
     </message>
     <message>
         <source>International &amp;Accents</source>
-        <translation>Mezinárodní znaménka &amp;přízvuku</translation>
+        <translation>Mezinárodní &amp;akcenty</translation>
     </message>
     <message>
         <source>\includegraphics{file}</source>
-        <translation>\includegraphics{file}</translation>
+        <translation>\includegraphics{〈soubor〉}</translation>
     </message>
     <message>
         <source>\include{file}</source>
-        <translation></translation>
+        <translation>\include{〈soubor〉}</translation>
     </message>
     <message>
         <source>\input{file}</source>
-        <translation></translation>
+        <translation>\input{〈soubor〉}</translation>
     </message>
     <message>
         <source>Cross References</source>
@@ -2631,27 +2636,27 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
     </message>
     <message>
         <source>label</source>
-        <translation>label - Štítek</translation>
+        <translation>Štítek \label{〈klíč〉}</translation>
     </message>
     <message>
         <source>ref</source>
-        <translation>ref - Odkaz</translation>
+        <translation>Odkaz - \ref{〈klíč〉}</translation>
     </message>
     <message>
         <source>pageref</source>
-        <translation>pageref - Odkaz na stranu</translation>
+        <translation>Odkaz na stranu - \pageref{〈klíč〉}</translation>
     </message>
     <message>
         <source>index</source>
-        <translation>index - Rejstřík</translation>
+        <translation>Rejstřík - \index{〈položka〉}</translation>
     </message>
     <message>
         <source>cite</source>
-        <translation>cite - Citace</translation>
+        <translation>Citace - \cite{〈klíč〉}</translation>
     </message>
     <message>
         <source>footnote</source>
-        <translation>footnote - Poznámka</translation>
+        <translation>Poznámka - \footnote{〈text〉}</translation>
     </message>
     <message>
         <source>&amp;Math</source>
@@ -2659,11 +2664,11 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
     </message>
     <message>
         <source>Inline math mode $...$</source>
-        <translation>Matematický režim v textu $ ... $</translation>
+        <translation>Matematický režim v řádku  - $...$</translation>
     </message>
     <message>
         <source>Display math mode \[...\]</source>
-        <translation>Zobrazit matematický režim \[ ... \]</translation>
+        <translation>Matematický režim vně řádku - \[...\]</translation>
     </message>
     <message>
         <source>Numbered equations \begin{equation}</source>
@@ -2671,11 +2676,11 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
     </message>
     <message>
         <source>\begin{align}</source>
-        <translation></translation>
+        <translation>Zarovnané rovnice - \begin{&amp;align}</translation>
     </message>
     <message>
         <source>\begin{eqnarray}</source>
-        <translation></translation>
+        <translation>\begin{eqnarray}</translation>
     </message>
     <message>
         <source>_{} - subscript</source>
@@ -2687,7 +2692,7 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
     </message>
     <message>
         <source>\begin{array}</source>
-        <translation></translation>
+        <translation>\begin{array}</translation>
     </message>
     <message>
         <source>Math &amp;Functions</source>
@@ -2695,7 +2700,7 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
     </message>
     <message>
         <source>Math Font St&amp;yles</source>
-        <translation>&amp;Písma v matematickém režimu</translation>
+        <translation>&amp;Styly matematických znaků</translation>
     </message>
     <message>
         <source>\mathrm{} [selection]</source>
@@ -2731,7 +2736,7 @@ prepend &lt;b&gt;c:&lt;/b&gt; for current file instead of master file (include t
     </message>
     <message>
         <source>Math &amp;Accents</source>
-        <translation>&amp;Znaménka přízvuku v matematickém režimu</translation>
+        <translation>Matematické &amp;akcenty</translation>
     </message>
     <message>
         <source>Math S&amp;paces</source>
@@ -2777,7 +2782,7 @@ Chcete je odstranit?</translation>
     </message>
     <message>
         <source>huge</source>
-        <translation>Obrovské</translation>
+        <translation>Obrovské - \huge</translation>
     </message>
     <message>
         <source>Internal</source>
@@ -2797,47 +2802,47 @@ Chcete je odstranit?</translation>
     </message>
     <message>
         <source>eqref</source>
-        <translation>eqref</translation>
+        <translation>\eqref{〈klíč〉}</translation>
     </message>
     <message>
         <source>\begin{&lt;environment&gt;}</source>
-        <translation>\begin{&lt;environment&gt;}</translation>
+        <translation>Obecné - \begin{&lt;environment&gt;}</translation>
     </message>
     <message>
         <source>\begin{center}</source>
-        <translation>\begin{center}</translation>
+        <translation>Zarovnání na střed - \begin{center}</translation>
     </message>
     <message>
         <source>\begin{flushleft}</source>
-        <translation>\begin{flushleft}</translation>
+        <translation>Zarovnání doleva - \begin{flushleft}</translation>
     </message>
     <message>
         <source>\begin{flushright}</source>
-        <translation>\begin{flushright}</translation>
+        <translation>Zarovnání doprava - \begin{flushright}</translation>
     </message>
     <message>
         <source>\begin{quote}</source>
-        <translation>\begin{quote}</translation>
+        <translation>Krátká citace - \begin{quote}</translation>
     </message>
     <message>
         <source>\begin{quotation}</source>
-        <translation>\begin{quotation}</translation>
+        <translation>Dlouhá citace - \begin{quotation}</translation>
     </message>
     <message>
         <source>\begin{verse}</source>
-        <translation>\begin{verse}</translation>
+        <translation>Sloka - \begin{verse}</translation>
     </message>
     <message>
         <source>\begin{table}</source>
-        <translation>\begin{table}</translation>
+        <translation>Tabulka - \begin{table}</translation>
     </message>
     <message>
         <source>\begin{figure}</source>
-        <translation>\begin{figure}</translation>
+        <translation>Číslo - \begin{figure}</translation>
     </message>
     <message>
         <source>\begin{titlepage}</source>
-        <translation>\begin{titlepage}</translation>
+        <translation>Titulní strana - \begin{titlepage}</translation>
     </message>
     <message>
         <source>Emphasis - \emph</source>
@@ -2849,7 +2854,7 @@ Chcete je odstranit?</translation>
     </message>
     <message>
         <source>Slanted - \textsl</source>
-        <translation>\textsl - \textsl</translation>
+        <translation>Nakloněné - \textsl</translation>
     </message>
     <message>
         <source>Boldface - \textbf</source>
@@ -2925,7 +2930,7 @@ Chcete je odstranit?</translation>
     </message>
     <message>
         <source>Numbered equation \begin{equation}</source>
-        <translation>Očíslované rovnice \begin{equation}</translation>
+        <translation>Očíslovaná rovnice \begin{equation}</translation>
     </message>
     <message>
         <source>Typewriter - \mathtt{}</source>
@@ -3195,7 +3200,7 @@ Tyto změny budou ztraceny, pokud bude nahrán s novým kódováním znaků.Opra
     <name>Help</name>
     <message>
         <source>texdoc took too long to open the documentation for the package:</source>
-        <translation type="unfinished">Texdocu trvalo příliš dlouho otevření dokumentace pro balíček:</translation>
+        <translation>Texdocu trvalo příliš dlouho otevření dokumentace pro balíček:</translation>
     </message>
 </context>
 <context>
@@ -4199,11 +4204,11 @@ Chcete ji přepsat?</translation>
     </message>
     <message>
         <source>Scrolling follows cursor</source>
-        <translation>Posouvání obrazu následuje ukazovátko</translation>
+        <translation>Posouvání obrazu následuje ukazatel</translation>
     </message>
     <message>
         <source>Cursor follows scrolling</source>
-        <translation>Ukazovátko následuje posouvání obrazu</translation>
+        <translation>Ukazatel následuje posouvání obrazu</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
@@ -4831,7 +4836,7 @@ Má se soubor nahrát znovu?</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation>&amp;Úpravy</translation>
+        <translation>Úp&amp;ravy</translation>
     </message>
     <message>
         <source>&amp;Search</source>
@@ -4867,75 +4872,75 @@ Má se soubor nahrát znovu?</translation>
     </message>
     <message>
         <source>Move cursor up</source>
-        <translation>Posunout ukazovátko nahoru</translation>
+        <translation>Posunout ukazatel nahoru</translation>
     </message>
     <message>
         <source>Move cursor down</source>
-        <translation>Posunout ukazovátko dolů</translation>
+        <translation>Posunout ukazatel dolů</translation>
     </message>
     <message>
         <source>Move cursor left (1 character)</source>
-        <translation>Posunout ukazovátko doleva (jeden znak)</translation>
+        <translation>Posunout ukazatel doleva (jeden znak)</translation>
     </message>
     <message>
         <source>Move cursor right (1 character)</source>
-        <translation>Posunout ukazovátko doprava (jeden znak)</translation>
+        <translation>Posunout ukazatel doprava (jeden znak)</translation>
     </message>
     <message>
         <source>Move cursor left (1 word)</source>
-        <translation>Posunout ukazovátko doleva (jedno slovo)</translation>
+        <translation>Posunout ukazatel doleva (jedno slovo)</translation>
     </message>
     <message>
         <source>Move cursor right (1 word)</source>
-        <translation>Posunout ukazovátko doprava (jedno slovo)</translation>
+        <translation>Posunout ukazatel doprava (jedno slovo)</translation>
     </message>
     <message>
         <source>Move cursor to line start</source>
-        <translation>Posunout ukazovátko na začátek řádku</translation>
+        <translation>Posunout ukazatel na začátek řádku</translation>
     </message>
     <message>
         <source>Move cursor to line end</source>
-        <translation>Posunout ukazovátko na konec řádku</translation>
+        <translation>Posunout ukazatel na konec řádku</translation>
     </message>
     <message>
         <source>Move cursor to document start</source>
-        <translation>Posunout ukazovátko na začátek dokumentu</translation>
+        <translation>Posunout ukazatel na začátek dokumentu</translation>
     </message>
     <message>
         <source>Move cursor to document end</source>
-        <translation>Posunout ukazovátko na konec dokumentu</translation>
+        <translation>Posunout ukazatel na konec dokumentu</translation>
     </message>
     <message>
         <source>Move cursor one page up</source>
-        <translation>Posunout ukazovátko o jednu stranu nahoru</translation>
+        <translation>Posunout ukazatel o jednu stranu nahoru</translation>
     </message>
     <message>
         <source>Move cursor one page down</source>
-        <translation>Posunout ukazovátko o jednu stranu dolů</translation>
+        <translation>Posunout ukazatel o jednu stranu dolů</translation>
     </message>
     <message>
         <source>Select up</source>
-        <translation>Posunout ukazovátko a vybrat nahoru</translation>
+        <translation>Posunout ukazatel a vybrat nahoru</translation>
     </message>
     <message>
         <source>Select down</source>
-        <translation>Posunout ukazovátko a vybrat dolů</translation>
+        <translation>Posunout ukazatel a vybrat dolů</translation>
     </message>
     <message>
         <source>Select left (1 character)</source>
-        <translation>Posunout ukazovátko a vybrat doleva (jeden znak)</translation>
+        <translation>Posunout ukazatel a vybrat doleva (jeden znak)</translation>
     </message>
     <message>
         <source>Select right (1 character)</source>
-        <translation>Posunout ukazovátko a vybrat doprava (jeden znak)</translation>
+        <translation>Posunout ukazatel a vybrat doprava (jeden znak)</translation>
     </message>
     <message>
         <source>Select left (1 word)</source>
-        <translation>Posunout ukazovátko a vybrat doleva (jedno slovo)</translation>
+        <translation>Posunout ukazatel a vybrat doleva (jedno slovo)</translation>
     </message>
     <message>
         <source>Select right (1 word)</source>
-        <translation>Posunout ukazovátko a vybrat doprava (jedno slovo)</translation>
+        <translation>Posunout ukazatel a vybrat doprava (jedno slovo)</translation>
     </message>
     <message>
         <source>Select to line start</source>
@@ -4955,11 +4960,11 @@ Má se soubor nahrát znovu?</translation>
     </message>
     <message>
         <source>Select page up</source>
-        <translation>Posunout ukazovátko o jednu stranu nahoru a vybrat</translation>
+        <translation>Posunout ukazatel o jednu stranu nahoru a vybrat</translation>
     </message>
     <message>
         <source>Select page down</source>
-        <translation>Posunout ukazovátko o jednu dolů nahoru a vybrat</translation>
+        <translation>Posunout ukazatel o jednu dolů nahoru a vybrat</translation>
     </message>
     <message>
         <source>Delete left character</source>
@@ -5027,11 +5032,11 @@ Má se soubor nahrát znovu?</translation>
     </message>
     <message>
         <source>Create cursor mirror up</source>
-        <translation>Vytvořit zrcadlové ukazovátko nahoru</translation>
+        <translation>Vytvořit zrcadlový ukazatel nahoru</translation>
     </message>
     <message>
         <source>Create cursor mirror down</source>
-        <translation>Vytvořit zrcadlové ukazovátko dolů</translation>
+        <translation>Vytvořit zrcadlový ukazatel dolů</translation>
     </message>
     <message>
         <source>Next placeholder</source>
@@ -5158,7 +5163,7 @@ to ke ztrátě dat.
     <name>QFormatConfig</name>
     <message>
         <source>normal</source>
-        <translation>Obvyklý</translation>
+        <translation>Obvyklé</translation>
     </message>
     <message>
         <source>comment</source>
@@ -5178,7 +5183,7 @@ to ke ztrátě dat.
     </message>
     <message>
         <source>verbatim</source>
-        <translation>Doslovný</translation>
+        <translation>Doslovný text</translation>
     </message>
     <message>
         <source>braceMatch</source>
@@ -5304,63 +5309,63 @@ Chcete, aby byly uloženy?</translation>
     </message>
     <message>
         <source>background</source>
-        <translation>Barva pozadí</translation>
+        <translation>Pozadí</translation>
     </message>
     <message>
         <source>line:error</source>
-        <translation>Řádek:Chyba</translation>
+        <translation>Řádek s chybou</translation>
     </message>
     <message>
         <source>line:warning</source>
-        <translation>Řádek:Varování</translation>
+        <translation>Řádek s varováním</translation>
     </message>
     <message>
         <source>line:badbox</source>
-        <translation>Řádek:Špatné okénko</translation>
+        <translation>Řádek: Špatné okénko</translation>
     </message>
     <message>
         <source>line:bookmark</source>
-        <translation>Řádek:Záložka</translation>
+        <translation>Řádek se záložkou </translation>
     </message>
     <message>
         <source>line:bookmark0</source>
-        <translation>Řádek:Záložka0</translation>
+        <translation>Řádek se záložkou 0</translation>
     </message>
     <message>
         <source>line:bookmark1</source>
-        <translation>Řádek:Záložka1</translation>
+        <translation>Řádek se záložkou 1</translation>
     </message>
     <message>
         <source>line:bookmark2</source>
-        <translation>Řádek:Záložka2</translation>
+        <translation>Řádek se záložkou 2</translation>
     </message>
     <message>
         <source>line:bookmark3</source>
-        <translation>Řádek:Záložka3</translation>
+        <translation>Řádek se záložkou 3</translation>
     </message>
     <message>
         <source>line:bookmark4</source>
-        <translation>Řádek:Záložka4</translation>
+        <translation>Řádek se záložkou 4</translation>
     </message>
     <message>
         <source>line:bookmark5</source>
-        <translation>Řádek:Záložka5</translation>
+        <translation>Řádek se záložkou 5</translation>
     </message>
     <message>
         <source>line:bookmark6</source>
-        <translation>Řádek:Záložka6</translation>
+        <translation>Řádek se záložkou 6</translation>
     </message>
     <message>
         <source>line:bookmark7</source>
-        <translation>Řádek:Záložka7</translation>
+        <translation>Řádek se záložkou 7</translation>
     </message>
     <message>
         <source>line:bookmark8</source>
-        <translation>Řádek:Záložka8</translation>
+        <translation>Řádek se záložkou 8</translation>
     </message>
     <message>
         <source>line:bookmark9</source>
-        <translation>Řádek:Záložka9</translation>
+        <translation>Řádek se záložkou 9</translation>
     </message>
     <message>
         <source>replacement</source>
@@ -5372,7 +5377,7 @@ Chcete, aby byly uloženy?</translation>
     </message>
     <message>
         <source>structure</source>
-        <translation>Stavební příkaz</translation>
+        <translation>Stavba</translation>
     </message>
     <message>
         <source>styleHint</source>
@@ -5380,7 +5385,7 @@ Chcete, aby byly uloženy?</translation>
     </message>
     <message>
         <source>latexSyntaxMistake</source>
-        <translation>latexSkladebnáChyba</translation>
+        <translation>Chyba ve skladbě LaTeXu</translation>
     </message>
     <message>
         <source>size</source>
@@ -5400,7 +5405,7 @@ Chcete, aby byly uloženy?</translation>
     </message>
     <message>
         <source>commentTodo</source>
-        <translation>PoznámkaCoDělet</translation>
+        <translation>Poznámka Co se má udělat</translation>
     </message>
     <message>
         <source>magicComment</source>
@@ -5416,15 +5421,15 @@ Chcete, aby byly uloženy?</translation>
     </message>
     <message>
         <source>diffDelete</source>
-        <translation>RozdílSmazat</translation>
+        <translation>Rozdíl Smazat</translation>
     </message>
     <message>
         <source>diffAdd</source>
-        <translation>RozdílPřidat</translation>
+        <translation>Rozdíl Přidat</translation>
     </message>
     <message>
         <source>diffReplace</source>
-        <translation>RozdílNahradit</translation>
+        <translation>Rozdíl Nahradit</translation>
     </message>
     <message>
         <source>Font Family</source>
@@ -5444,7 +5449,7 @@ Chcete, aby byly uloženy?</translation>
     </message>
     <message>
         <source>align-ampersand</source>
-        <translation>zarovnání-symbol &amp;</translation>
+        <translation>Zarovnání symbolu &amp;</translation>
     </message>
     <message>
         <source>wordRepetition</source>
@@ -5480,51 +5485,51 @@ Chcete, aby byly uloženy?</translation>
     </message>
     <message>
         <source>txs-test</source>
-        <translation>txs-zkouška</translation>
+        <translation>Zkouška TXS</translation>
     </message>
     <message>
         <source>txs-test-pass</source>
-        <translation>txs-zkouška-projití</translation>
+        <translation>Úspěch ve zkoušce TXS</translation>
     </message>
     <message>
         <source>txs-test-fail</source>
-        <translation>txs-zkouška-selhání</translation>
+        <translation>Neúspěch ve zkoušce TXS</translation>
     </message>
     <message>
         <source>txs-test-qdebug</source>
-        <translation>txs-zkouška-qdebug</translation>
+        <translation>Zkouška TXS qdebug</translation>
     </message>
     <message>
         <source>math-delimiter</source>
-        <translation>matematika-oddělovací znak</translation>
+        <translation>Matematický oddělovací znak</translation>
     </message>
     <message>
         <source>txs-test-warn</source>
-        <translation>txs-zkouška-varování</translation>
+        <translation>Zkouška TXS varování</translation>
     </message>
     <message>
         <source>dtx:guard</source>
-        <translation>dtx:dohled</translation>
+        <translation>dtx: dohled</translation>
     </message>
     <message>
         <source>dtx:macro</source>
-        <translation>dtx:makro</translation>
+        <translation>dtx: makro</translation>
     </message>
     <message>
         <source>dtx:verbatim</source>
-        <translation>dtx:doslovný</translation>
+        <translation>dtx: doslovný</translation>
     </message>
     <message>
         <source>dtx:specialchar</source>
-        <translation>dtx:zvláštní znak</translation>
+        <translation>dtx: zvláštní znak</translation>
     </message>
     <message>
         <source>lua:keyword</source>
-        <translation>lua:klíčové slovo</translation>
+        <translation>lua: klíčové slovo</translation>
     </message>
     <message>
         <source>lua:comment</source>
-        <translation>lua:poznámka</translation>
+        <translation>lua: poznámka</translation>
     </message>
     <message>
         <source>Font size relative to editor font size.
@@ -5577,7 +5582,7 @@ Poznámka: Pokud je velikost větší než rozestupy řádků, mohou být znaky 
     </message>
     <message>
         <source>The search text occurs %1 times after the current cursor. Do you want to restart from the beginning of the scope?</source>
-        <translation>Hledaný text se po nynějším ukazovátku vyskytuje %1 krát. Chcete hledat dál od začátku oblasti?</translation>
+        <translation>Hledaný text se po nynějším ukazateli vyskytuje %1 krát. Chcete hledat dál od začátku oblasti?</translation>
     </message>
     <message>
         <source>The search text occurs %1 times within the search scope.</source>
@@ -5609,7 +5614,7 @@ V nahrazovacím textu jsou \1 až \9 nahrazeny pomocí naleziště odpovídajíc
     </message>
     <message>
         <source>Starts the search from the current cursor position.</source>
-        <translation>Začne hledání on současné polohy ukazovátka.</translation>
+        <translation>Začne hledání on současné polohy ukazatele.</translation>
     </message>
     <message>
         <source>Only searches in the selected text.</source>
@@ -5960,7 +5965,7 @@ Důvěřujete tomuto skriptu?</translation>
     </message>
     <message>
         <source>Cursor</source>
-        <translation>Ukazovátko</translation>
+        <translation>Ukazatel</translation>
     </message>
     <message>
         <source>Selection</source>
@@ -6090,7 +6095,7 @@ Abyste změnil zkratku, musíte upravit třetí nebo čtvrtý sloupec.</translat
     </message>
     <message>
         <source>Check spelling from cursor...</source>
-        <translation>Ověřit pravopis od polohy ukazovátka...</translation>
+        <translation>Ověřit pravopis od polohy ukazatele...</translation>
     </message>
     <message>
         <source>No more misspelled words</source>
@@ -6466,11 +6471,15 @@ se nepodařilo odstranit.</translation>
     </message>
     <message>
         <source>TeXstudio found user templates in deprecated locations.
-From now on user templates are hosted at
+>From now on user templates are hosted at
 %1
 Should TeXstudio move the existing user templates there?
 If not, they will not be available via the Make Template dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>TeXstudio nalezlo uživatelské předlohy v odmítnutých umístěních.
+Od nynějška jsou uživatelské předlohy hostěny na
+%1
+Má tam TeXstudio přemístit stávající uživatelské předlohy?
+Pokud ne, nebudou dostupné přes dialog Vytvořit předlohu.</translation>
     </message>
 </context>
 <context>
@@ -6544,15 +6553,15 @@ If not, they will not be available via the Make Template dialog.</source>
     <name>TexdocDialog</name>
     <message>
         <source>Packages Help (Texdoc)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nápověda k balíkům (Texdoc)</translation>
     </message>
     <message>
         <source>Package:</source>
-        <translation type="unfinished"></translation>
+        <translation>Balík: </translation>
     </message>
     <message>
         <source>No Documentation Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Není dostupná žádná dokumentace</translation>
     </message>
 </context>
 <context>
@@ -6627,7 +6636,7 @@ If not, they will not be available via the Make Template dialog.</source>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation>&amp;Úpravy</translation>
+        <translation>Úp&amp;ravy</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -7243,7 +7252,7 @@ If not, they will not be available via the Make Template dialog.</source>
     </message>
     <message>
         <source>&amp;Wizards</source>
-        <translation>&amp;Průvodci</translation>
+        <translation>Průvo&amp;dci</translation>
     </message>
     <message>
         <source>Can&apos;t detect the file name.
@@ -7496,7 +7505,7 @@ Předtím, než budete moci sestavit dokument, jej musíte uložit.</translation
     </message>
     <message>
         <source>SVN &amp;update...</source>
-        <translation>O&amp;bnova SVN...</translation>
+        <translation>&amp;Aktualizace SVN...</translation>
     </message>
     <message>
         <source>&amp;Comment</source>
@@ -7540,7 +7549,7 @@ Předtím, než budete moci sestavit dokument, jej musíte uložit.</translation
     </message>
     <message>
         <source>Open &amp;Recent</source>
-        <translation>Otevřít &amp;nedávné</translation>
+        <translation>Otevřít &amp;nedávný</translation>
     </message>
     <message>
         <source>C&amp;lear Inline Preview</source>
@@ -8390,35 +8399,35 @@ V opačném případě by se mohly objevit náhodné chyby a pády.</translation
     </message>
     <message>
         <source>Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Sezení</translation>
     </message>
     <message>
         <source>Load Session...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrát sezení...</translation>
     </message>
     <message>
         <source>Save Session...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit sezení...</translation>
     </message>
     <message>
         <source>Add magic comments ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat kouzelné poznámky...</translation>
     </message>
     <message>
         <source>Insert root document name as TeX comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit název kořenového dokumentu jako poznámku TeXu</translation>
     </message>
     <message>
         <source>Insert document coding as TeX comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit kódování dokumentu jako poznámku TeXu</translation>
     </message>
     <message>
         <source>Packages Help...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nápověda k balíkům...</translation>
     </message>
     <message>
         <source>Loading of last session failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrání posledního sezení se nezdařilo.</translation>
     </message>
     <message>
         <source>Saving under the name
@@ -8426,27 +8435,31 @@ V opačném případě by se mohly objevit náhodné chyby a pády.</translation
 is currently not possible because a modified version of a file
 with this name is open in TeXstudio. You have to save or close
 this other file before you can overwrite it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložení pod názvem
+%1
+není v současnosti možné, protože je v TeXstudiu otevřena změněná
+verze souboru s tímto názvem. Tento jiný soubor musíte uložit nebo
+zavřít, předtím než jej budete moci přepsat.</translation>
     </message>
     <message>
         <source>Load Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrát sezení</translation>
     </message>
     <message>
         <source>TeXstudio Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Sezení TeXstudio</translation>
     </message>
     <message>
         <source>Loading of session failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrání sezení se nezdařilo.</translation>
     </message>
     <message>
         <source>Save Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit sezení</translation>
     </message>
     <message>
         <source>Saving of session failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložení sezení se nezdařilo.</translation>
     </message>
 </context>
 <context>
@@ -9341,7 +9354,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Expected cursor object</source>
-        <translation>Očekáván předmět ukazovátka</translation>
+        <translation>Očekáván předmět ukazatele</translation>
     </message>
 </context>
 <context>
